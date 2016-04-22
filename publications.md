@@ -8,45 +8,69 @@ share: false
 
  A full list of my publications can be found on my [Google Scholar](http://scholar.google.com/citations?user=F58CO_QAAAAJ&hl=en) page.
 
-+   **Zhenwen Dai**, Andreas Damianou, Javier González, Neil Lawrence  (2015)  
++   **Zhenwen Dai**, Andreas Damianou, Javier González, Neil D. Lawrence  (2016)  
     **Variational Auto-encoded Deep Gaussian Processes**  
-    [arXiv:1511.06455](http://arxiv.org/abs/1511.06455)
+    International Conference on Learning Representations (ICLR)  
+    [[PDF]](http://arxiv.org/abs/1511.06455) [[video]](https://youtu.be/4IryFhMYvn4)
 
-+   César Lincoln C. Mattos, **Zhenwen Dai**, Andreas Damianou, Jeremy Forth, Guilherme A. Barreto, Neil D. Lawrence (2015)  
++   César Lincoln C. Mattos, **Zhenwen Dai**, Andreas Damianou, Jeremy Forth, Guilherme A. Barreto, Neil D. Lawrence (2016)  
     **Recurrent Gaussian Processes**  
-    [arXiv:1511.06644](http://arxiv.org/abs/1511.06644)
+    International Conference on Learning Representations (ICLR)  
+    [[PDF]](http://arxiv.org/abs/1511.06644) [[video1]](https://youtu.be/FuF-uZ83VMw) [[video2]](https://youtu.be/FR-oeGxV6yY) [[video3]](https://youtu.be/AT0HMtoPgjc)
+
++   Javier González, **Zhenwen Dai**, Philipp Hennig, Neil D. Lawrence (2016)  
+    **Batch Bayesian Optimization via Local Penalization**  
+    International Conference on Artificial Intelligence and Statistics (AISTATS)  
+    [[PDF]](http://arxiv.org/abs/1505.08052)
+
++   Fariba Yousefi, **Zhenwen Dai**, Carl Henrik Ek, Neil Lawrence (2016)  
+    **Unsupervised Learning with Imbalanced Data via Structure Consolidation Latent Variable Model**  
+    International Conference on Learning Representations (ICLR) workshop track  
+    [[PDF]]()
+
++   Fariba Yousefi, **Zhenwen Dai**, Qing Zhong, Peter Wild, Carl Henrik Ek, Neil D. Lawrence (2016)  
+    **An unsupervised computational approach to detect PTEN loss in prostate cancer using an in situ hybridization (ISH) assay**  
+    German Society of Pathology (DGP), *oral presentation*
+
++   Jose A. Rodriguez-Serrano, Diane Larlus, **Zhenwen Dai** (2015)  
+    **Data-Driven Detection of Prominent Objects and of their Parts towards Improved Fine-Grained Visual Recognition**  
+    IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI)  
+    [[PDF]](http://dx.doi.org/10.1109/TPAMI.2015.2509988)
 
 +   Jacquelyn Shelton, Jan Gasthaus, **Zhenwen Dai**, Jörg Lücke and Arthur Gretton (2015)  
     **GP-select: Accelerating EM using adaptive subspace preselection**  
     arXiv:1412.3411  
 
-+   **Zhenwen Dai**, James Hensman and Neil Lawrence (2015)  
++   **Zhenwen Dai**, James Hensman and Neil D. Lawrence (2015)  
     **Spike and Slab Gaussian Process Latent Variable Models**  
-    arXiv:1505.02434  
+    [arXiv:1505.02434](http://arxiv.org/abs/1505.02434)  
 
 +   Abdul-Saboor Sheikh, **Zhenwen Dai**, Nicol Harper, Richard Turner and Jörg Lücke (2015)  
     **Maximal causes for a masking based model of STRFs in primary auditory cortex**  
     Computational and Systems Neuroscience (Cosyne)  
 
-+   **Zhenwen Dai** and Neil Lawrence (2015)  
++   **Zhenwen Dai** and Neil D. Lawrence (2015)  
     **Variational Hierarchical Community of Experts**  
     ICML Deep Learning workshop  
+
++   Fariba Yousefi, **Zhenwen Dai**, Qing Zhong, Peter Wild, Carl Henrik Ek, Neil D. Lawrence (2015)  
+    **An Unsupervised Approach for Prostate Cancer Diagnosis from Tissue Microarray Images**  
+    NIPS workshop on Women in Machine Learning
 
 +   **Zhenwen Dai** and Jörg Lücke (2014)  
     **Autonomous Document Cleaning—A Generative Approach to Reconstruct Strongly Corrupted Scanned Texts**  
     IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI), 1950--1962  
+    [[PDF]](http://dx.doi.org/10.1109/TPAMI.2014.2313126)
 
-+   **Zhenwen Dai**, Andreas Damianou, James Hensman and Neil Lawrence (2014)  
++   **Zhenwen Dai**, Andreas Damianou, James Hensman and Neil D. Lawrence (2014)  
     **Gaussian Process Models with Parallelization and GPU acceleration**  
     NIPS workshop Software Engineering for Machine Learning  
-
-+   Jose A. Rodriguez-Serrano, Diane Larlus and **Zhenwen Dai** (2014)  
-    **Data-Driven Detection of Prominent Objects and of their Parts towards Improved Fine-Grained Visual Recognition**  
-    IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI), accepted.  
+    [[PDF]](http://arxiv.org/abs/1410.4984)
 
 +   **Zhenwen Dai**, Georgios Exarchakis and Jörg Lücke (2013)  
     **What Are the Invariant Occlusive Components of Image Patches? A Probabilistic Generative Approach**  
     Advances in Neural Information Processing Systems (NIPS), 243--251  
+    [[PDF]](http://papers.nips.cc/paper/5195-what-are-the-invariant-occlusive-components-of-image-patches-a-probabilistic-generative-approach.pdf)
 
 +   **Zhenwen Dai** and Jörg Lücke (2012)  
     **Unsupervised learning of translation invariant occlusive components**  
@@ -54,7 +78,7 @@ share: false
 
 +   **Zhenwen Dai** and Jörg Lücke (2012)  
     **Autonomous cleaning of corrupted scanned documents—A generative modeling approach**  
-    IEEE Conference on Computer Vision and Pattern Recognition (CVPR), \textbf{oral presentation}, 3338--3345  
+    IEEE Conference on Computer Vision and Pattern Recognition (CVPR), *oral presentation*, 3338--3345  
 
 +   Miaomiao Liu, K-YK Wong, **Zhenwen Dai** and Zhihu Chen (2011)  
     **Pose estimation from reflections for specular surface recovery**  
