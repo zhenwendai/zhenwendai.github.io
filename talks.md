@@ -6,6 +6,16 @@ modified: 2014-08-08T20:53:07.573882-04:00
 comments: false
 share: false
 ---
+
++   Variational Auto-Encoded Deep Gaussian Processes (2015)  
+    Alan Turing Institute Deep Learning Scoping Workshop, Edinburgh, UK.  
+
++   Probabilistic Unsupervised Learning with Latent Variable Models (2015)  
+    Cluster of Excellence Hearing4all and Dept for Medical Physics and Acoustics, Carl von Ossietzky University Oldenburg, Germany.  
+
++   Unsupervised Learning with Latent Variable Models (2015)  
+    Computational and Biological Learning Lab, University of Cambridge, UK.  
+
 +	Variational Hierarchical Communities of Experts (2015)  
 	CSML lunch seminar, UCL, UK.  
 	[[slides]](./pdfs/slides_UCL_2015.pdf)
