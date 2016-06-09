@@ -7,6 +7,10 @@ comments: false
 share: false
 ---
 
++   Scaling Up Deep Gaussian Processes (2016)
+    Deep Probabilistic Model Meeting, London, UK.
+    [[slides]](./slides/slides_London_2016.pdf)
+
 +   Variational Auto-Encoded Deep Gaussian Processes (2015)  
     Alan Turing Institute Deep Learning Scoping Workshop, Edinburgh, UK.  
 
