@@ -8,6 +8,11 @@ share: false
 
  A full list of my publications can be found on my [Google Scholar](http://scholar.google.com/citations?user=F58CO_QAAAAJ&hl=en) page.
 
++   Javier González, **Zhenwen Dai**, Andreas Damianou, Neil D. Lawrence  (2017)  
+    **Preferential Bayesian Optimization**  
+    International Conference on Machine Learning (ICML)  
+    [[PDF]](https://arxiv.org/abs/1704.03651)
+
 +   **Zhenwen Dai**, Andreas Damianou, Javier González, Neil D. Lawrence  (2016)  
     **Variational Auto-encoded Deep Gaussian Processes**  
     International Conference on Learning Representations (ICLR)  
