@@ -8,6 +8,26 @@ share: false
 
  A full list of my publications can be found on my [Google Scholar](http://scholar.google.com/citations?user=F58CO_QAAAAJ&hl=en) page.
 
++   **Zhenwen Dai**, Mauricio A. Álvarez, Neil D. Lawrence (2017)  
+    **Efficient Modeling of Latent Information in Supervised Learning using Gaussian Processes**  
+    Conference on Neural Information Processing Systems (NIPS)  
+    [[PDF]](https://arxiv.org/abs/1705.09862)
+
++   **Zhenwen Dai**, Mudassar Iqbal, Neil D. Lawrence, Magnus Rattray (2017)  
+    **Efficient inference for sparse latent variable models of transcriptional regulation**  
+    Bioinformatics  
+    [[PDF]](https://doi.org/10.1093/bioinformatics/btx508) [[CODE]](https://github.com/zhenwendai/SITAR)
+
++   César Lincoln C. Mattos, **Zhenwen Dai**, Andreas Damianou, Guilherme A. Barreto, Neil D. Lawrence (2017)  
+    **Deep recurrent Gaussian processes for outlier-robust system identification**  
+    Journal of Process Control  
+    [[PDF]](http://www.sciencedirect.com/science/article/pii/S0959152417301233)
+
++   Jacquelyn A Shelton, Jan Gasthaus, **Zhenwen Dai**, Jörg Lücke, Arthur Gretton (2017)  
+    **GP-select: Accelerating EM using adaptive subspace preselection**  
+    Neural Computation  
+    [[PDF]](http://www.mitpressjournals.org/doi/abs/10.1162/NECO_a_00982)
+
 +   Javier González, **Zhenwen Dai**, Andreas Damianou, Neil D. Lawrence  (2017)  
     **Preferential Bayesian Optimization**  
     International Conference on Machine Learning (ICML)  
@@ -96,4 +116,3 @@ share: false
 +   Miaomiao Liu, Kwan-Yee K Wong, **Zhenwen Dai** and Zhihu Chen (2011)  
     **Specular surface recovery from reflections of a planar pattern undergoing an unknown pure translation**  
     Asian Conference on Computer Vision (ACCV) 2010, 137--147  
-
