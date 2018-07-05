@@ -10,7 +10,7 @@ share: false
  
 +   Xiaoyu Lu, Javier González, **Zhenwen Dai**, Neil D. Lawrence (2018)  
     **Structured Variationally Auto-encoded Optimization**  
-    International Conference on Machine Learning (ICML)
+    International Conference on Machine Learning (ICML)  
     [[PDF]]()  
 
 +   **Zhenwen Dai**, Mauricio A. Álvarez, Neil D. Lawrence (2017)  
