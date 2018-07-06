@@ -16,7 +16,7 @@ share: false
 +   **Zhenwen Dai**, Mauricio A. Álvarez, Neil D. Lawrence (2017)  
     **Efficient Modeling of Latent Information in Supervised Learning using Gaussian Processes**  
     Conference on Neural Information Processing Systems (NIPS)  
-    [[PDF]](https://arxiv.org/abs/1705.09862)
+    [[PDF]](http://papers.nips.cc/paper/7098-efficient-modeling-of-latent-information-in-supervised-learning-using-gaussian-processes.pdf)  
 
 +   **Zhenwen Dai**, Mudassar Iqbal, Neil D. Lawrence, Magnus Rattray (2017)  
     **Efficient inference for sparse latent variable models of transcriptional regulation**  
