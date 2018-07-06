@@ -36,7 +36,7 @@ share: false
 +   Javier González, **Zhenwen Dai**, Andreas Damianou, Neil D. Lawrence  (2017)  
     **Preferential Bayesian Optimization**  
     International Conference on Machine Learning (ICML)  
-    [[PDF]](https://arxiv.org/abs/1704.03651)
+    [[PDF]](https://arxiv.org/abs/1704.03651) [[video]](https://vimeo.com/238266775)  
 
 +   **Zhenwen Dai**, Andreas Damianou, Javier González, Neil D. Lawrence  (2016)  
     **Variational Auto-encoded Deep Gaussian Processes**  
