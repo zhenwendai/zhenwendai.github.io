@@ -11,7 +11,7 @@ share: false
 +   Xiaoyu Lu, Javier González, **Zhenwen Dai**, Neil D. Lawrence (2018)  
     **Structured Variationally Auto-encoded Optimization**  
     International Conference on Machine Learning (ICML)  
-    [[PDF]]()  
+    [[PDF]](http://proceedings.mlr.press/v80/lu18c.html)  
 
 +   **Zhenwen Dai**, Mauricio A. Álvarez, Neil D. Lawrence (2017)  
     **Efficient Modeling of Latent Information in Supervised Learning using Gaussian Processes**  
