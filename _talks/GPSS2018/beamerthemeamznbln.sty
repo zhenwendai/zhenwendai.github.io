@@ -1,0 +1,193 @@
+\ProvidesPackage{beamerthemeamznbln}[2014/11/18]
+\RequirePackage{tikz}
+\RequirePackage{calc}
+
+\RequirePackage[scriptsize,it]{caption}
+\captionsetup{labelformat=empty,labelsep=none}
+
+\mode<presentation>
+
+%%% variables and options
+\def\beamer@amznbln@value@true{true}
+\def\beamer@amznbln@value@false{false}
+\def\beamer@amznbln@value@empty{}
+
+\def\beamer@amznbln@url{}
+\def\beamer@amznbln@numbering{}
+\def\beamer@amznbln@titlepagelayout{}
+
+\newlength{\beamer@amznbln@menuwidth}
+\newlength{\beamer@amznbln@restofmenuwidth}
+
+\setlength{\beamer@amznbln@menuwidth}{.5\paperwidth}
+
+\DeclareOptionBeamer{url}[{amazon}]{\def\beamer@amznbln@url{#1}}
+\DeclareOptionBeamer{numbering}[true]{\def\beamer@amznbln@numbering{#1}}
+\DeclareOptionBeamer{titlepagelayout}[]{\def\beamer@amznbln@titlepagelayout{#1}}
+\DeclareOptionBeamer{menuwidth}[]{\setlength{\beamer@amznbln@menuwidth}{#1}}
+
+\ProcessOptionsBeamer
+
+\setlength{\beamer@amznbln@restofmenuwidth}{0.95\paperwidth}
+\addtolength\beamer@amznbln@restofmenuwidth{-\beamer@amznbln@menuwidth}
+
+
+
+\useinnertheme{circles}
+\useoutertheme{miniframes}
+
+\usecolortheme{amznbln}
+
+\setbeamertemplate{navigation symbols}{}
+
+% TITLE PAGE
+\defbeamertemplate*{title page}{titlepage}
+%{
+%  \thispagestyle{empty}
+%
+%  \begin{picture}(0,0)(0,0)
+%    \put(-29,-171){\includegraphics[width=1.01\paperwidth]{../diagrams/amazonstart.png}}
+%  \end{picture}
+%
+%  \begin{picture}(0,0)(0,0)
+%    \put(10,30){
+%        \begin{minipage}{0.9\linewidth}
+%	\vspace*{25mm}
+%        \centering{\LARGE\color{amznblnwhite} \inserttitle\par}
+%        \centering{\large\color{amznblnlblue} \insertsubtitle\par}
+%        \end{minipage}
+%    }
+%  \end{picture}
+%  \begin{picture}(0,0)(0,0)
+%    \put(10,-50){
+%        \begin{minipage}{0.90\linewidth}
+%        \centering{\large\color{amznblnwhite} \insertauthor\par}
+%        \end{minipage}
+%    }
+%  \end{picture}
+%  \begin{picture}(0,0)(0,0)
+%    \put(10,-125){
+%        \begin{minipage}{0.90\linewidth}
+%        \centering{\color{amznblnwhite} \insertinstitute\par}
+%        \end{minipage}
+%    }
+%  \end{picture}
+%
+%}
+{
+  \thispagestyle{empty}
+
+  \begin{picture}(0,0)(0,0)
+    \put(-30,-220){\includegraphics[width=1.01\paperwidth]{../diagrams/amazonstart.png}}
+  \end{picture}
+
+  \begin{picture}(0,0)(0,0)
+    \put(10,30){
+        \begin{minipage}{0.9\linewidth}
+        \vspace*{25mm}
+        \centering{\LARGE\color{amznblnwhite} \inserttitle\par}
+        \centering{\large\color{amznblnlblue} \insertsubtitle\par}
+        \end{minipage}
+    }
+  \end{picture}
+  \begin{picture}(0,0)(0,0)
+    \put(10,-50){
+        \begin{minipage}{0.90\linewidth}
+        \centering{\large\color{amznblnwhite} \insertauthor\par}
+        \end{minipage}
+    }
+  \end{picture}
+  \begin{picture}(0,0)(0,0)
+    \put(10,-125){
+        \begin{minipage}{0.90\linewidth}
+        \centering{\color{amznblnwhite} \insertinstitute\par}
+        \end{minipage}
+    }
+  \end{picture}
+
+}
+
+
+% HEADER
+\defbeamertemplate*{headline}{amznbln}%
+{
+  \begin{beamercolorbox}[wd=\paperwidth,leftskip=1em,sep=0.6em]{headerline title}
+    \begin{minipage}{\beamer@amznbln@restofmenuwidth}
+        {\small{\bfseries Amazon} {\tiny Core ML}}%
+    \end{minipage}
+    \hspace{0px}
+    \begin{minipage}{\beamer@amznbln@menuwidth}
+      \begin{flushright}
+     %   \insertsectionnavigationhorizontal{\beamer@amznbln@menuwidth}{}{}
+      \end{flushright}
+    \end{minipage}
+
+  \end{beamercolorbox}
+  \begin{beamercolorbox}[wd=\paperwidth,sep=1px]{headerline border}
+    \vspace{1px}
+  \end{beamercolorbox}
+}
+
+% FOOTER
+\defbeamertemplate*{footline}{amznbln}
+{
+%\leavevmode%
+  \begin{beamercolorbox}[wd=\paperwidth,leftskip=1em,sep=0.2em]{footerline}
+    \insertshortauthor \;--\; \insertshorttitle \hfill %
+    \ifx\beamer@amznbln@numbering\beamer@amznbln@value@false\relax\else
+        \insertframenumber/\inserttotalframenumber\;--\; %
+    \fi
+    \ifx\beamer@amznbln@url\beamer@amznbln@value@empty
+        {\bfseries Amazon}
+    \else
+        {\bfseries \beamer@amznbln@url}
+    \fi
+  \end{beamercolorbox}
+}
+
+
+% SECTION LIST
+\usesectionheadtemplate
+{ %active
+  \color{amznblnlblue} \insertsectionhead
+}
+{ %other
+  \color{amznblnlightgrey} \insertsectionhead
+}
+
+% BACKGROUND IMAGE
+%\setbeamertemplate{background}{
+%  \ifnum\insertframenumber=1\else
+%  \parbox[r][\paperheight]{\paperwidth}{
+%    \vfill\hfill
+%    \includegraphics[width=100px]{../diagrams/amazon.png}
+%  }
+%  \fi
+%}
+
+
+\defbeamertemplate*{frametitle}{}
+{
+  \begin{beamercolorbox}[sep=0ex,ht= 2.5ex, wd=\paperwidth]{}
+    \hspace{2ex}\insertframetitle{} \hspace{1ex}\hrulefill %
+  \end{beamercolorbox}%
+}
+
+%
+\newcommand{\sectionframe}[1]
+{
+    \begin{beamercolorbox}[wd=\textwidth]{footerline}
+        \begin{minipage}{\textwidth}
+          \vspace{1em}
+          \centering\Large{\color{white}{#1}}
+          \vspace{1em}
+        \end{minipage}%
+    \end{beamercolorbox}%
+    \nointerlineskip
+    \begin{beamercolorbox}[sep=0ex,ht=2pt, wd=\textwidth]{headerline border}
+    \end{beamercolorbox}%
+}
+%\mode<handout>
+
+\mode
+<all>

@@ -1,0 +1,692 @@
+%\documentclass[serif, mathserif, professionalfont]{beamer}
+\documentclass[14pt,aspectratio=1610]{beamer}
+\usetheme{Boadilla}
+\usefonttheme{professionalfonts}
+
+%\usecolortheme{dove}
+%\usenavigationsymbolstemplate{}
+%\usetheme[
+%        menuwidth={0.3\paperwidth}
+%        ]{amznbln}
+
+\setbeamercovered{transparent=20}
+
+\setlength{\parskip}{0.05cm}
+
+\setlength{\parskip}{1em}
+
+\usepackage[makeroom]{cancel}
+\usepackage{verbatim}
+
+\usepackage{algorithmic,multirow,colortbl}
+\usepackage{animate}
+\usepackage{tikz}
+\usepackage{natbib}
+\newcommand{\tikzmark}[1]{\tikz[overlay, remember picture] \coordinate (#1);}
+\usepackage{appendixnumberbeamer}
+
+%\usetheme[
+%        menuwidth={0.3\paperwidth}
+ %       ]{amznbln}
+
+%\setbeamercolor{framesubtitle}{fg=red}
+%\addtobeamertemplate{frametitle}{}{%
+%  \ifx\insertframesubtitle\@empty\else%
+%  \usebeamerfont{framesubtitle}%
+%  \usebeamercolor[fg]{framesubtitle}%
+%  \insertframesubtitle%
+%  \fi%
+%}
+
+\setbeamercovered{transparent=20}
+\input{./definitions.tex}
+\input{./notationDef.tex}
+
+\newcommand{\yM}{\mathbf{Y}}
+\newcommand{\yV}{\mathbf{y}}
+\newcommand{\fM}{\mathbf{F}}
+\newcommand{\fV}{\mathbf{f}}
+\newcommand{\xM}{\mathbf{X}}
+\newcommand{\xV}{\mathbf{x}}
+\newcommand{\K}{\mathbf{K}}
+\renewcommand{\L}{\mathbf{L}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\uM}{\mathbf{U}}
+\newcommand{\uV}{\mathbf{u}}
+\newcommand{\zM}{\mathbf{Z}}
+\newcommand{\zV}{\mathbf{z}}
+\newcommand{\bound}{\mathcal{L}}
+\newcommand{\I}{\mathbf{I}}
+\newcommand{\lambdaM}{\mathbf{\Lambda}}
+\newcommand{\aM}{\mathbf{A}}
+\newcommand{\hV}{\mathbf{h}}
+\newcommand{\bV}{\mathbf{b}}
+\newcommand{\wM}{\mathbf{W}}
+
+\newcommand{\ie}{\textit{i.e., }}
+
+\usepackage{xspace}
+\newcommand{\acr}[1]{\textsc{#1}\xspace}
+\newcommand{\gp}{\acr{gp}}
+\newcommand{\gps}{\acr{gps}}
+\newcommand{\bo}{\acr{bo}}
+\newcommand{\smac}{\acr{smac}}
+
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\bL}{\textbf{L}}
+\newcommand{\bI}{\textbf{I}}
+\newcommand{\vk}{\vec{k}}
+\newcommand{\vL}{\vec{\Lambda}}
+\newcommand{\xmin}{x_{\min}}
+\newcommand{\pmin}{p_{\min}}
+\newcommand{\fmin}{f_{\min}}
+\newcommand{\pfmin}{p_{f_{\min}}}
+\renewcommand{\vec}{\boldsymbol}
+\newcommand{\fun}[1]{\mathsf{#1}}
+\renewcommand{\O}{\mathcal{O}}
+\newcommand{\GP}{\mathcal{GP}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\Id}{\vec{I}}
+\newcommand{\II}{\mathbb{I}}
+\newcommand{\future}{\mathcal{F}}
+\newcommand{\IR}{\mathbb{R}}
+\newcommand{\argmin}{\operatorname*{arg\: min}}
+\newcommand{\argmax}{\operatorname*{arg\: max}}
+\newcommand{\chol}{\operatorname{\mathsf{C}}}
+\newcommand{\xst}{x_{\ast}}
+\newcommand{\yst}{y_{\ast}}
+\newcommand{\eqdef}{\stackrel{\mathclap{\normalfont\mbox{def}}}{=}}
+
+
+
+%\newcommand{\acr}[1]{\textsc{#1}\xspace}
+\newcommand{\dpp}{\acr{dpp}}
+\newcommand{\us}{\acr{pbo}}
+\newcommand{\direct}{\acr{direct}}
+\newcommand{\lbfgs}{\acr{l-bfgs}}
+\newcommand{\map}{\acr{map}}
+\newcommand{\ep}{\acr{ep}}
+\newcommand{\mpi}{\acr{mpi}}
+\newcommand{\el}{\acr{el}}
+\newcommand{\lcb}{\acr{gp-lcb}}
+\newcommand{\cei}{\acr{cei}}
+\newcommand{\ei}{\acr{ei}}
+\newcommand{\msbm}{\acr{msbm}}
+\newcommand{\random}{\acr{ramdom}}
+\newcommand{\thompsom}{\acr{thompsom}}
+\newcommand{\pe}{\acr{pe}}
+\newcommand{\dts}{\acr{dts}}
+\newcommand{\ibo}{\acr{ibo}}
+
+
+\graphicspath{{./}{./diagrams/}}
+
+
+\begin{document}
+\title{Scalable Gaussian Processes}
+\author{Zhenwen Dai}
+\institute{Amazon}
+\frame{\maketitle}
+
+% ====
+
+\begin{frame}{Gaussian process}
+Input and Output Data: 
+\[
+\yV = (y_1, \ldots, y_N), \quad \xM = (\xV_1, \ldots, \xV_N)^\top
+\]
+\begin{align*}
+p(\yV| \fV) = \gaussianDist{\yV}{\fV}{\sigma^2 \I}, \quad p (\fV| \xM) = \gaussianDist{\fV}{0}{\K(\xM, \xM)}
+\end{align*}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{gp_first_example.pdf} 
+\end{center}
+\end{frame}
+
+\begin{frame}{The scaling behavior w.r.t. $N$}
+The computational cost of Gaussian process is $O(N^3)$.
+\begin{center}
+\includegraphics[width=0.6\textwidth]{gp_scaling.pdf} 
+\end{center}
+\end{frame}
+
+\begin{frame}{Behind a Gaussian process fit}
+\begin{itemize}
+
+\item Point Estimate / Maximum A Posteriori (MAP) of hyper-parameters.
+%
+\[
+\theta^* = \argmax_{\theta} \log p(\yV|\xM, \theta) = \argmax_{\theta} \log \gaussianDist{\yV}{0}{\K+\sigma^2\I}
+\]
+
+\item Prediction on a test point given the observed data and the optimized hyper-parameters.
+\begin{align*}
+p(\fV_* | &\xM_*, \yV, \xM, \theta) = \\
+& \gaussianDist{\fV_*}{\K_* (\K+\sigma^2\I)^{-1} \yV}{\K_{**} - \K_* (\K+\sigma^2\I)^{-1} \K_*^\top}
+\end{align*}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{How to implement the log-likelihood (1)}
+\begin{itemize}
+\item Compute the covariance matrix $\K$:
+\[\K = 
+ \begin{pmatrix}
+  k(\xV_1, \xV_1) & \cdots & k(\xV_1, \xV_N) \\
+  \vdots  &  \ddots & \vdots  \\
+  k(\xV_N, \xV_1) & \cdots & k(\xV_N, \xV_N) 
+ \end{pmatrix}
+ \]
+where $k(\xV_i, \xV_j) = \gamma \exp\left(-\frac{1}{2l^2}(\xV_i - \xV_j)^\top(\xV_i - \xV_j)\right)$
+\vspace{5mm}
+\item The complexity is $O(N^2Q)$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{How to implement the log-likelihood (2)}
+\begin{itemize}
+\item Plug in the log-pdf of multi-variate normal distribution:
+\begin{align*}
+\log p(\yV|\xM) =&  \log \gaussianDist{\yV}{0}{\K+\sigma^2\I}\\
+=& -\frac{1}{2}\log |2\pi (\K+\sigma^2\I)| - \frac{1}{2} \yV^\top (\K+\sigma^2\I)^{-1} \yV
+\end{align*}
+\item Take a Cholesky decomposition: $\L = \mathtt{chol}(\K+\sigma^2\I )$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{How to implement the log-likelihood (3)}
+\begin{align*}
+\log p(\yV|\xM) =& -\frac{1}{2}\log |2\pi (\K+\sigma^2\I)| - \frac{1}{2} \yV^\top (\K+\sigma^2\I)^{-1} \yV\\
+=& -\frac{1}{2}\log \left((2\pi)^N |\L\L^\top|\right) - \frac{1}{2} \tr{\yV^\top (\L\L^\top)^{-1} \yV} \\
+=& -\frac{N}{2}\log 2\pi  -\log  |\L|- \frac{1}{2} \tr{(\L^{-1}\yV)^\top \L^{-1}\yV} \\
+=& -\frac{1}{2}(||\L^{-1}\yV||^2+N\log 2\pi)-\sum_i \log \L_{ii}
+\end{align*}
+The computational complexity is $O(N^3 + N^2 + N)$. Therefore, the overall complexity including the computation of $\K$ is $O(N^3)$.
+\end{frame}
+
+\begin{frame}[fragile]{A quick profiling ($N$=1000, $Q$=10)}
+Time unit is microsecond.
+\small
+\begin{verbatim}
+Line #     Time    % Time     Line Contents
+ 2                        def log_likelihood(kern, X, Y, sigma2):
+ 3          6.0      0.0      N = X.shape[0]
+ 4      55595.0     58.7      K = kern.K(X)
+ 5       4369.0      4.6      Ky = K + np.eye(N)*sigma2
+ 6      30012.0     31.7      L = np.linalg.cholesky(Ky)
+ 7       4361.0      4.6      LinvY = dtrtrs(L, Y, lower=1)[0]
+ 8         49.0      0.1      logL = N*np.log(2*np.pi)/-2.
+ 9         82.0      0.1      logL += np.square(LinvY).sum()/-2.
+10        208.0      0.2      logL += -np.log(np.diag(L)).sum()
+11          2.0      0.0      return logL
+\end{verbatim}
+\end{frame}
+
+\begin{frame}{Too slow or too many data points?}
+A lot of data does not necessarily mean a complex model.
+\begin{center}
+\includegraphics[width=0.6\textwidth]{gp_example_lots_data.pdf} 
+\end{center}
+\end{frame}
+
+\begin{frame}{Pseudo Data}
+Summarize \textit{real} data into a small set of \textit{pseudo} data.
+\begin{center}
+\includegraphics[width=0.6\textwidth]{sparsegp_example_lots_data.pdf} 
+\end{center}
+\end{frame}
+
+\begin{frame}{Sparse Gaussian Process}
+Sparse GPs refers to a family of approximations:
+\begin{itemize}
+\item Nystr\"{o}m approximation \citep{WilliamsSeeger2001}
+\item Fully independent training conditional (FITC) \citep{SnelsonZoubin2006}
+\item Variational sparse Gaussian process \citep{Titsias2009}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Approximation by subset}
+\begin{itemize}
+\item Let's randomly pick a subset from the training data: $\zM \in \R^{M\times Q}$.
+\item Approximate the covariance matrix $\K$ by $\tilde{\K}$.
+\vspace{5mm}
+
+$\tilde{\K} = \K_z \K_{zz}^{-1} \K_z^\top$, where $\K_{z} = \K(\xM, \zM)$ and $\K_{zz} = \K(\zM, \zM)$.
+\vspace{5mm}
+\item Note that $\tilde{\K} \in \R^{N\times N}$, $\K_{z} \in \R^{N\times M}$ and $\K_{zz} \in \R^{M \times M}$.
+\item The log-likelihood is approximated by 
+\[
+\log p(\yV|\xM, \theta) \approx  \log \gaussianDist{\yV}{0}{\K_z \K_{zz}^{-1} \K_z^\top+\sigma^2\I}.
+\]
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Efficient computation using Woodbury formula}
+\begin{itemize}
+\item The naive formulation does not bring any computational benefits.
+\[
+\tilde{\bound} = -\frac{1}{2}\log |2\pi (\tilde{\K}+\sigma^2\I)| - \frac{1}{2} \yV^\top (\tilde{\K}+\sigma^2\I)^{-1} \yV
+\]
+\item Apply the Woodbury formula:
+\[
+(\K_z \K_{zz}^{-1} \K_z^\top+\sigma^2\I)^{-1} = \sigma^{-2}\I - \sigma^{-4} \K_z (\K_{zz} + \sigma^{-2}\K_z^\top\K_z)^{-1}\K_z^\top
+\]
+\item Note that $(\K_{zz} + \sigma^{-2}\K_z^\top\K_z) \in \R^{M \times M}$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Nystr\"{o}m approximation}
+\begin{itemize}
+\item The above approach is called Nystr\"{o}m approximation by \cite{WilliamsSeeger2001}.
+\item The approximation is directly done on the covariance matrix without the concept of pseudo data.
+\item The subset selection is done randomly.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Gaussian process with Pseudo Data (1)}
+\begin{itemize}
+\item \cite{SnelsonZoubin2006} proposes the idea of having pseudo data. This approach is later referred to as  
+Fully independent training conditional (FITC).
+\item Augment the training data ($\xM$, $\yV$) with pseudo data $\uV$ at location $\zM$.
+\begin{align*}
+p\left(\begin{bmatrix}
+\yV \\ \uV \end{bmatrix}|\begin{bmatrix}
+\xM \\ \zM \end{bmatrix} \right) =&  \gaussianDist{\begin{bmatrix}
+\yV \\ \uV \end{bmatrix}}{0}{\begin{bmatrix}
+\K_{ff}+\sigma^2\I & \K_{fu}  \\ \K_{fu}^\top & \K_{uu} \end{bmatrix}}
+\end{align*}
+where $\K_{ff} = \K(\xM, \xM)$, $\K_{fu} = \K(\xM, \zM)$ and $\K_{uu} = \K(\zM, \zM)$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Gaussian process with Pseudo Data (2)}
+\begin{itemize}
+\item Thanks to the marginalization property of Gaussian distribution,
+\[
+p(\yV| \xM) = \int_{\uV} p(\yV, \uV | \xM, \zM).
+\]
+\item Further re-arrange the notation:
+\begin{align*}
+p(\yV, \uV| \xM, \zM) = p(\yV| \uV, \xM, \zM) p(\uV| \zM)
+\end{align*}
+where $p(\uV| \zM) = \gaussianDist{\uV}{0}{\K_{uu}}$, 
+$p(\yV| \uV, \xM, \zM)=\gaussianDist{\yV}{\K_{fu} \K_{uu}^{-1} \uV}{\K_{ff} - \K_{fu} \K_{uu}^{-1} \K_{fu}^\top+\sigma^2\I}$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{FITC approximation (1)}
+\begin{itemize}
+\item So far, $p(\yV | \xM)$ has not been changed, but there is no speed-up, $\K_{ff} \in \R^{N\times N}$ in $\K_{ff} - \K_{fu} \K_{uu}^{-1} \K_{fu}^\top+\sigma^2\I$.
+
+\item The FITC approximation assumes
+\[
+\tilde{p}(\yV| \uV, \xM, \zM)=\gaussianDist{\yV}{\K_{fu} \K_{uu}^{-1} \uV}{\lambdaM +\sigma^2\I},
+\]
+where $\lambdaM = (\K_{ff} - \K_{fu} \K_{uu}^{-1} \K_{fu}^\top)\circ \I$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{FITC approximation (2)}
+\begin{itemize}
+\item Marginalize $\uV$ from the model definition:
+\[
+\tilde{p}(\yV| \xM, \zM) = \gaussianDist{\yV}{0}{\K_{fu} \K_{uu}^{-1} \K_{fu}^\top+\lambdaM +\sigma^2\I}
+\]
+
+\item Woodbury formula can be applied in the sam way as in Nystr\"{o}m approximation:
+\[
+(\K_z \K_{zz}^{-1} \K_z^\top+\lambdaM+\sigma^2\I)^{-1} = \aM - \aM \K_z (\K_{zz} + \K_z^\top\aM\K_z)^{-1}\K_z^\top\aM,
+\]
+where $\aM = (\lambdaM+\sigma^2\I)^{-1}$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{FITC approximation (3)}
+\begin{itemize}
+\item FITC allows the pseudo data not being a subset of training data.
+
+\item The inducing inputs $\zM$ can be optimized via gradient optimization.
+
+\item Like Nystr\"{o}m approximation, when taking all the training data as inducing inputs, the FITC approximation is equivalent to the original GP:
+\[
+\tilde{p}(\yV| \xM, \zM=\xM) = \gaussianDist{\yV}{0}{\K_{ff} +\sigma^2\I}
+\]
+\item FITC can be combined easily with expectation propagation (EP). \cite{BuiEtAl2017} provides an overview and a nice connection with variational sparse GP.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Model Approximation vs. Approximate Inference}
+When the exact model/inference is intractable, typically there are two types of approaches:
+\begin{itemize}
+\item Approximate the original model with a simpler one such that inference becomes tractable, like Nystr\"{o}m approximation, FITC.
+\item Keep the original model but derive an approximate inference method which is often \textit{not} able to return the true answer, like variational inference.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Model Approximation vs. Approximate Inference}
+A problem with model approximation is that 
+\begin{itemize}
+\item when an approximated model requires some tuning, e.g., for hyper-parameters, it is unclear how to improve it based on training data.
+
+\item In the case of FITC, we know the model is correct if $\zM = \xM$, however, optimizing $\zM$ will not necessarily lead to a better location.
+
+\item In fact, optimizing $\zM$ can lead to overfitting. \citep{QuinoneroRasmussen2005}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Variational Sparse Gaussian Process (1)}
+
+\begin{itemize}
+\item \cite{Titsias2009} introduces a variational approach for sparse GP.
+\item It follows the same concept of pseudo data:
+\begin{align*}
+p(\yV| \xM) = \int_{\fV, \uV} p(\yV| \fV) p(\fV| \uV, \xM, \zM) p(\uV| \zM)
+\end{align*}
+where $p(\uV| \zM) = \gaussianDist{\uV}{0}{\K_{uu}}$, 
+$p(\yV| \uV, \xM, \zM)=\gaussianDist{\yV}{\K_{fu} \K_{uu}^{-1} \uV}{\K_{ff} - \K_{fu} \K_{uu}^{-1} \K_{fu}^\top+\sigma^2\I}$.
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Variational Sparse Gaussian Process (2)}
+\begin{itemize}
+\item Instead of approximate the model, \cite{Titsias2009} derives a variational lower bound.
+
+\item Normally, a variational lower bound of a marginal likelihood, also known as evidence lower bound (ELBO), looks like
+\begin{align*}
+\log p(\yV | \xM) =& \log \int_{\fV, \uV} p(\yV | \fV) p(\fV| \uV, \xM, \zM) p(\uV | \zM) \\
+\geq& \int_{\fV, \uV} q(\fV, \uV) \log \frac{p(\yV | \fV) p(\fV| \uV, \xM, \zM) p(\uV | \zM)}{q(\fV, \uV)}.
+\end{align*}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{\textit{Special} Variational Posterior}
+\begin{itemize}
+\item \cite{Titsias2009} defines an unusual variational posterior:
+\[
+q(\fV, \uV) = p(\fV| \uV, \xM, \zM) q(\uV), \quad \text{where } q(\uV) = \gaussianDist{\uV}{\mu}{\Sigma}.
+\]
+\item Plug it into the lower bound:
+\begin{align*}
+\bound =& \int_{\fV, \uV} p(\fV| \uV, \xM, \zM) q(\uV) \log \frac{p(\yV | \fV) \cancel{p(\fV| \uV, \xM, \zM)} p(\uV | \zM)}{\cancel{p(\fV| \uV, \xM, \zM)} q(\uV)} \\
+=& \expectation{\log p(\yV | \fV)}_{p(\fV| \uV, \xM, \zM) q(\uV)} - \KL{q(\uV)}{p(\uV|\zM)}\\
+=& \expectation{\log \gaussianDist{\yV}{\K_{fu}\K_{uu}^{-1}\uV}{\sigma^2\I}}_{q(\uV)} - \KL{q(\uV)}{p(\uV|\zM)}
+\end{align*}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}{\textit{Special} Variational Posterior}
+\begin{itemize}
+\item There is no inversion of any big covariance matrices in the first term:
+\begin{align*}
+ -\frac{N}{2}\log 2\pi \sigma^2 -\frac{1}{2\sigma^2}\expectation{(\K_{fu}\K_{uu}^{-1}\uV-\yV)^\top(\K_{fu}\K_{uu}^{-1}\uV-\yV)}_{q(\uV)}
+\end{align*}
+\item The overall complexity of the lower bound is $O(NM^2)$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Tighten the Bound}
+\begin{itemize}
+\item Find the optimal parameters of $q(\uV)$:
+\[
+\mu^*, \Sigma^* = \argmax_{\mu, \Sigma} \bound(\mu, \Sigma).
+\]
+\item Make the bound as tight as possible by plugging in $\mu^*$ and $\Sigma^*$:
+\[
+\bound = \log \gaussianDist{\yV}{0}{\K_{fu} \K_{uu}^{-1} \K_{fu}^\top+ \sigma^2\I} - \frac{1}{2\sigma^2}\tr{\K_{ff} - \K_{fu} \K_{uu}^{-1} \K_{fu}^\top}.
+\]
+\item The overall complexity of the lower bound remains $O(NM^2)$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Variational sparse GP}
+\begin{itemize}
+\item Note that $\bound$ is not a valid log-pdf, $\int_{\yV} \exp(\bound(\yV)) \leq 1$, due to the trace term.
+\item As inducing points are variational parameters, optimizing the inducing inputs $\zM$ always leads to a better bound.
+\item The model does not ``overfit" with too many inducing points. 
+\end{itemize}
+\vspace{-5mm}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{sparsegp_example_lots_inducing_points.pdf} 
+\end{center}
+\end{frame}
+
+\begin{frame}{An alternative view of sparse GP}
+Is variational sparse GP a \textit{hack} only working for GP?
+\end{frame}
+
+\begin{frame}{The two key ingredients}
+The two key ingredients of variational sparse GP:
+\begin{itemize}
+\item Variational compression \citep{HensmanLawrence2014}
+\item Variational posterior with ``pseudo data" (``variational Gaussian process" by \cite{TranEtAl2016})
+\end{itemize}
+\end{frame}
+
+\begin{frame}{A generic variational lower bound}
+Consider a generic probabilistic model $p(y| h) p(h |x)$ with $h$ being a latent variable. A variational lower bound is typically like
+\begin{align*}
+\log p(y | x) \geq& \int_{h} q(h) \log \frac{p(y| h) p(h |x)}{q(h)}
+\end{align*}
+\end{frame}
+
+\begin{frame}{Use prior as posterior}
+
+We are free to choose the form of the variational posterior. It is always possible to choose $q(h) = p(h|x)$.
+This results into a lower bound:
+\begin{align*}
+\bound = \int_h p(h|x) \log p(y|h).
+\end{align*}
+The same idea can be easily applied to a deeper model:
+\begin{align*}
+\log p(y | x) =& \log \int_{h_1, h_2, h_3} p(y| h_1) p(h_1|h_2) p(h_2 | h_3) p(h_3 |x ) \\
+\geq& \int_{h_1, h_2, h_3} p(h_1|h_2) p(h_2 | h_3) p(h_3 |x ) \log p(y|h_1)
+\end{align*}
+This is weird. Does it work?
+\end{frame}
+
+\begin{frame}{Sigmoid Belief Networks}
+It works surprising well. I applied this trick to sigmoid belief networks, $p(\yV|\hV_{1}) \prod_{l=1}^{L-1} p(\hV_{l}|\hV_{l+1}) p(\hV_L)$, where
+\[
+p(\yV|\hV_{1}) = \sigma(\wM_1\hV_{1}+\bV_1), \quad p(\hV_l|\hV_{l+1}) = \sigma(\wM_{l+1}\hV_{l+1}+\bV_{l+1}) 
+\]
+$p(\hV_L) = \prod_{i} \pi_i^{\hV_{Li}}(1-\pi_i)^{1-\hV_{Li}}$
+
+\begin{align*}
+\bound = \int_{\hV_1, \ldots, \hV_L} q(\hV_L) \prod_{l=1}^{L-1} p(\hV_l|\hV_{l+1}) \log p(\yV|\hV_1)
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\begin{columns}
+
+\begin{column}[t]{0.3\linewidth}
+\footnotesize
+\vspace{1cm}
+\begin{itemize}
+\item 3 hidden layers (100-100-10)
+\item the generated examples from each value in the top layer
+\item in total 1024 examples
+\item columns encode first 5 bits.
+\item rows encode later 5 bits.
+\end{itemize}
+\end{column}
+\hfill
+\begin{column}[t]{0.68\linewidth}
+\begin{center}
+\includegraphics[width=0.95\textheight]{varsbn_mnist.pdf} 
+\end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{What is the price?}
+The variational lower bound can also be written as
+\begin{align*}
+\log p(y | x) = \int_{h} q(h) \log \frac{p(y| h) p(h |x)}{q(h)} + \KL{q(h)}{p(h|x, y)}
+\end{align*}
+
+With $q(h) = p(h|x)$,
+\begin{align*}
+\log p(y | x) = \int_{h} p(h|x) \log p(y| h) + \KL{p(h|x)}{p(h|x, y)}
+\end{align*}
+\end{frame}
+
+\begin{frame}{What is the price?}
+The lower bound is exact \textit{only if} the posterior is same as the prior.
+
+\begin{align*}
+\log p(y | x) = \int_{h} p(h|x) \log p(y| h) + \KL{p(h|x)}{p(h|x, y)}
+\end{align*}
+
+$\KL{p(h|x)}{p(h|x, y)}$ is zero, when
+\begin{itemize}
+\item $y$ is independent of $h$, i.e., $p(y|h) = p(y)$.
+\item $p(h|x)$ is a deterministic relation, i.e., $p(h|x) = \delta(h(x))$.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{A bias towards being a deterministic function}
+This variational posterior introduces a bias towards being a deterministic function.
+
+Assume the model is parameterized by $\theta$, i.e., $p(y|h, \theta) p(h|x, \theta)$.
+
+Point Estimate: 
+\begin{align*}
+\theta^* = \argmax_{\theta} \bound(\theta) = \argmax_{\theta}  \left( \log p(y | x, \theta) - \KL{p(h|x, \theta)}{p(h|x, y, \theta)} \right)
+\end{align*}
+\end{frame}
+
+\begin{frame}{A bias towards being a deterministic function}
+Variational Inference:
+\begin{align*}
+\hat{\bound} =& \int_{h, \theta} p(h|x, \theta) q(\theta) \log \frac{p(y|h, \theta) \cancel{p(h|x,\theta)} p(\theta)}{\cancel{p(h|x, \theta)} q(\theta)} \\
+=& \expectation{\log p(y | x, \theta) - \KL{p(h|x, \theta)}{p(h|x, y, \theta)}}_{q(\theta)} - \KL{q(\theta)}{p(\theta)} \\
+=& \expectation{\log p(y | x, \theta)}_{q(\theta)} - \KL{q(\theta)}{p(\theta)} \\
+& - \expectation{\KL{p(h|x, \theta)}{p(h|x, y, \theta)}}_{q(\theta)}
+\end{align*}
+\end{frame}
+
+\begin{frame}{Variational Gaussian Process}
+Consider a generic probabilistic model, e.g., $p(\yV | \fV) p(\fV)$.
+
+Variational lower bound:
+\[
+\bound = \int_{\fV} q(\fV) \log \frac{p(\yV | \fV) p(\fV)}{q(\fV)}
+\]
+
+One flexible variational posterior:
+\[
+q(\fV) = \int_{\fV} q(\fV|\uV) q(\uV)
+\]
+\end{frame}
+
+\begin{frame}{Variational Gaussian Process}
+It may not be tractable to compute $ \int_{\fV} q(\fV|\uV) q(\uV)$.
+
+One way to work around is to introduce $\uV$ as an auxiliary variable to the model:
+\[
+p(\yV | \fV) p(\fV) p(\uV|\fV)
+\]
+Note that we are free to choose the form of $p(\uV|\fV)$ and $q(\uV)$ and $q(\fV|\uV)$.
+\end{frame}
+
+\begin{frame}{}
+show the relation between two lower bounds.
+\begin{align*}
+\bound =& \int_{\fV, \uV}q(\fV|\uV) q(\uV) \log \frac{p(\yV | \fV) p(\fV) p(\uV|\fV) }{q(\fV|\uV) q(\uV)} \\
+=& \expectation{\log p(\yV | \fV)}_{q(\fV)} - \KL{q(\fV)}{p(\fV|\xM)} - \expectation{\KL{q(\uV|\fV)}{p(\uV| \fV, \zM, \xM)}}_{q(\fV)}
+\end{align*}
+\end{frame}
+
+
+\begin{frame}{In the case of GP}
+\[
+p(\uV|\zM, \fV, \xM) p(\fV| \xM) = p(\fV|\xM, \uV, \zM) p(\uV| \zM)
+\]
+This leads back to the usual sparse GP bound that we know.
+\begin{align*}
+p(\yV| \fV) &= \gaussianDist{\yV}{\fV}{\sigma^2 \I} \\ 
+p (\fV| \xM) &= \gaussianDist{\fV}{0}{\K(\xM, \xM)} \\
+p(\uV| \zM, \fV, \xM) &= \gaussianDist{\uV}{\K_{uf} \K_{ff}^{-1}\fV}{\K_{uu} - \K_{fu}^\top \K_{ff}^{-1} \K_{fu}}
+\end{align*}
+\begin{align*}
+\bound =& \int_{\fV, \uV} q(\fV, \uV) \log \frac{p(\yV | \fV) p(\fV | \xM) p(\uV| \fV, \zM, \xM) }{q(\fV, \uV)} \\
+=& \expectation{\log p(\yV | \fV)}_{q(\fV)} - \KL{q(\fV)}{p(\fV|\xM)} - \expectation{\KL{q(\uV|\fV)}{p(\uV| \fV, \zM, \xM)}}_{q(\fV)}
+\end{align*}
+
+\end{frame}
+
+\begin{frame}{In the case of sparse GP}
+\begin{align*}
+\bound =& \expectation{\log p(\yV | \xM, \uV, \zM)}_{q(\uV)} - \KL{q(\uV)}{p(\uV| \zM)} \\
+& - \expectation{\KL{p(\fV|\xM, \uV, \zM)}{p(\fV|\xM, \yV, \uV, \zM)}}_{q(\uV)}
+\end{align*}
+\end{frame}
+
+\begin{frame}{$\zM$ is a variational parameter!}
+The variational sparse GP model is $p(\yV|\fV) p(\fV|\xM, \uV, \zM) p(\uV| \zM)$ with $\uV$ being latent variable. Why $\zM$ is a variational parameter?
+\end{frame}
+
+\begin{frame}{The bias in variational Sparse GP}
+\end{frame}
+
+\begin{frame}{Stochastic Variational Inference}
+\end{frame}
+
+\begin{frame}{Parallel Sparse Gaussian Process}
+\end{frame}
+
+\begin{frame}{Distributed Gaussian Processes}
+\end{frame}
+
+\begin{frame}{GPU \& Auto-Differentiation}
+The new era of hardware and software engineering.
+
+Memory bandwidth:
+GPU(NVidia V100, AWS P3): 900 GB/s
+CPU (Intel Xeon E5-2660 v3, AWS C4): 68 GB/s
+\end{frame}
+
+\begin{frame}{GP Libraries}
+GPflow \url{https://github.com/GPflow/GPflow}
+
+GPyTorch \url{https://github.com/cornellius-gp/gpytorch}
+\end{frame}
+
+\begin{frame}{Probabilistic Programming}
+
+PyMC3
+
+Edward
+
+Pyro
+
+pyprob
+\end{frame}
+
+\begin{frame}{MXFusion}
+Modular Probabilistic Programming + GP
+\end{frame}
+
+\begin{frame}{}
+
+Acknowledgement. 
+
+James's blog: \url{https://www.prowler.io/blog/sparse-gps-approximate-the-posterior-not-the-model}
+\end{frame}
+
+\bibliographystyle{plainnat}
+{\footnotesize
+\bibliography{./scalable_gp}
+}
+%
+
+\end{document}

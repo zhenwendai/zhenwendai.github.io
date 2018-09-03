@@ -1,2 +1,15 @@
 _site
 .sass-cache
+*.aux
+*.log
+*.pyc
+*.nav
+*.synctex.gz
+*.toc
+*.top
+*.tui
+*.vrb
+*.bbl
+*.mp
+*.out
+.ipynb_checkpoints
