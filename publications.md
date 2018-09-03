@@ -7,11 +7,16 @@ share: false
 ---
 
  A full list of my publications can be found on my [Google Scholar](http://scholar.google.com/citations?user=F58CO_QAAAAJ&hl=en) page.
+ 
++   Xiaoyu Lu, Javier González, **Zhenwen Dai**, Neil D. Lawrence (2018)  
+    **Structured Variationally Auto-encoded Optimization**  
+    International Conference on Machine Learning (ICML)  
+    [[PDF]](http://proceedings.mlr.press/v80/lu18c.html)  
 
 +   **Zhenwen Dai**, Mauricio A. Álvarez, Neil D. Lawrence (2017)  
     **Efficient Modeling of Latent Information in Supervised Learning using Gaussian Processes**  
     Conference on Neural Information Processing Systems (NIPS)  
-    [[PDF]](https://arxiv.org/abs/1705.09862)
+    [[PDF]](http://papers.nips.cc/paper/7098-efficient-modeling-of-latent-information-in-supervised-learning-using-gaussian-processes.pdf)  
 
 +   **Zhenwen Dai**, Mudassar Iqbal, Neil D. Lawrence, Magnus Rattray (2017)  
     **Efficient inference for sparse latent variable models of transcriptional regulation**  
@@ -31,7 +36,7 @@ share: false
 +   Javier González, **Zhenwen Dai**, Andreas Damianou, Neil D. Lawrence  (2017)  
     **Preferential Bayesian Optimization**  
     International Conference on Machine Learning (ICML)  
-    [[PDF]](https://arxiv.org/abs/1704.03651)
+    [[PDF]](https://arxiv.org/abs/1704.03651) [[video]](https://vimeo.com/238266775)  
 
 +   **Zhenwen Dai**, Andreas Damianou, Javier González, Neil D. Lawrence  (2016)  
     **Variational Auto-encoded Deep Gaussian Processes**  

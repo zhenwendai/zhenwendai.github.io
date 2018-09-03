@@ -7,7 +7,8 @@ comments: false
 share: false
 ---
 +   Preferential Bayesian Optmization (2017)  
-    ICML 2017, Sydney, Australia
+    ICML 2017, Sydney, Australia  
+    [[video]](https://vimeo.com/238266775)  
 
 +   Scaling Up Deep Gaussian Processes (2016)  
     Deep Probabilistic Model Meeting, London, UK.  
