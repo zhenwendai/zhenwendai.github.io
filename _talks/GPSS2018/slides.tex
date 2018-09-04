@@ -62,6 +62,8 @@
 \newcommand{\hV}{\mathbf{h}}
 \newcommand{\bV}{\mathbf{b}}
 \newcommand{\wM}{\mathbf{W}}
+\newcommand{\phiM}{\mathbf{\Phi}}
+\newcommand{\phiV}{\mathbf{\phi}}
 
 \newcommand{\ie}{\textit{i.e., }}
 
@@ -128,6 +130,7 @@
 \title{Scalable Gaussian Processes}
 \author{Zhenwen Dai}
 \institute{Amazon}
+\date{September 4, 2018 @GPSS2018}
 \frame{\maketitle}
 
 % ====
@@ -141,7 +144,7 @@ Input and Output Data:
 p(\yV| \fV) = \gaussianDist{\yV}{\fV}{\sigma^2 \I}, \quad p (\fV| \xM) = \gaussianDist{\fV}{0}{\K(\xM, \xM)}
 \end{align*}
 \begin{center}
-\includegraphics[width=0.6\textwidth]{gp_first_example.pdf} 
+\includegraphics[width=0.5\textwidth]{gp_first_example.pdf} 
 \end{center}
 \end{frame}
 
@@ -191,21 +194,23 @@ where $k(\xV_i, \xV_j) = \gamma \exp\left(-\frac{1}{2l^2}(\xV_i - \xV_j)^\top(\x
 \item Plug in the log-pdf of multi-variate normal distribution:
 \begin{align*}
 \log p(\yV|\xM) =&  \log \gaussianDist{\yV}{0}{\K+\sigma^2\I}\\
-=& -\frac{1}{2}\log |2\pi (\K+\sigma^2\I)| - \frac{1}{2} \yV^\top (\K+\sigma^2\I)^{-1} \yV
+=& -\frac{1}{2}\log |2\pi (\K+\sigma^2\I)| - \frac{1}{2} \yV^\top (\K+\sigma^2\I)^{-1} \yV\\
+=& -\frac{1}{2}(||\L^{-1}\yV||^2+N\log 2\pi)-\sum_i \log \L_{ii}
 \end{align*}
 \item Take a Cholesky decomposition: $\L = \mathtt{chol}(\K+\sigma^2\I )$.
+\item The computational complexity is $O(N^3 + N^2 + N)$. Therefore, the overall complexity including the computation of $\K$ is $O(N^3)$.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{How to implement the log-likelihood (3)}
-\begin{align*}
-\log p(\yV|\xM) =& -\frac{1}{2}\log |2\pi (\K+\sigma^2\I)| - \frac{1}{2} \yV^\top (\K+\sigma^2\I)^{-1} \yV\\
-=& -\frac{1}{2}\log \left((2\pi)^N |\L\L^\top|\right) - \frac{1}{2} \tr{\yV^\top (\L\L^\top)^{-1} \yV} \\
-=& -\frac{N}{2}\log 2\pi  -\log  |\L|- \frac{1}{2} \tr{(\L^{-1}\yV)^\top \L^{-1}\yV} \\
-=& -\frac{1}{2}(||\L^{-1}\yV||^2+N\log 2\pi)-\sum_i \log \L_{ii}
-\end{align*}
-The computational complexity is $O(N^3 + N^2 + N)$. Therefore, the overall complexity including the computation of $\K$ is $O(N^3)$.
-\end{frame}
+%\begin{frame}{How to implement the log-likelihood (3)}
+%\begin{align*}
+%\log p(\yV|\xM) =& -\frac{1}{2}\log |2\pi (\K+\sigma^2\I)| - \frac{1}{2} \yV^\top (\K+\sigma^2\I)^{-1} \yV\\
+%=& -\frac{1}{2}\log \left((2\pi)^N |\L\L^\top|\right) - \frac{1}{2} \tr{\yV^\top (\L\L^\top)^{-1} \yV} \\
+%=& -\frac{N}{2}\log 2\pi  -\log  |\L|- \frac{1}{2} \tr{(\L^{-1}\yV)^\top \L^{-1}\yV} \\
+%=& -\frac{1}{2}(||\L^{-1}\yV||^2+N\log 2\pi)-\sum_i \log \L_{ii}
+%\end{align*}
+%The computational complexity is $O(N^3 + N^2 + N)$. Therefore, the overall complexity including the computation of $\K$ is $O(N^3)$.
+%\end{frame}
 
 \begin{frame}[fragile]{A quick profiling ($N$=1000, $Q$=10)}
 Time unit is microsecond.
@@ -228,7 +233,9 @@ Line #     Time    % Time     Line Contents
 \begin{frame}{Too slow or too many data points?}
 A lot of data does not necessarily mean a complex model.
 \begin{center}
-\includegraphics[width=0.6\textwidth]{gp_example_lots_data.pdf} 
+\includegraphics[width=0.8\textheight]{gp_example_lots_data.pdf} 
+\hfill
+\includegraphics[width=0.74\textheight]{lots_data_eigen_values.pdf} 
 \end{center}
 \end{frame}
 
@@ -275,6 +282,7 @@ $\tilde{\K} = \K_z \K_{zz}^{-1} \K_z^\top$, where $\K_{z} = \K(\xM, \zM)$ and $\
 (\K_z \K_{zz}^{-1} \K_z^\top+\sigma^2\I)^{-1} = \sigma^{-2}\I - \sigma^{-4} \K_z (\K_{zz} + \sigma^{-2}\K_z^\top\K_z)^{-1}\K_z^\top
 \]
 \item Note that $(\K_{zz} + \sigma^{-2}\K_z^\top\K_z) \in \R^{M \times M}$.
+\item The computational complexity reduces to $O(NM^2)$.
 \end{itemize}
 \end{frame}
 
@@ -282,6 +290,7 @@ $\tilde{\K} = \K_z \K_{zz}^{-1} \K_z^\top$, where $\K_{z} = \K(\xM, \zM)$ and $\
 \begin{itemize}
 \item The above approach is called Nystr\"{o}m approximation by \cite{WilliamsSeeger2001}.
 \item The approximation is directly done on the covariance matrix without the concept of pseudo data.
+\item The approximation becomes exact if the whole data set is taken, \ie $\K \K^{-1} \K^\top = \K$.
 \item The subset selection is done randomly.
 \end{itemize}
 \end{frame}
@@ -493,14 +502,30 @@ This is weird. Does it work?
 \end{frame}
 
 \begin{frame}{Sigmoid Belief Networks}
-It works surprising well. I applied this trick to sigmoid belief networks, $p(\yV|\hV_{1}) \prod_{l=1}^{L-1} p(\hV_{l}|\hV_{l+1}) p(\hV_L)$, where
+It works surprising well. \cite{DaiLawrence2015} applied this trick to sigmoid belief networks (SBN):
 \[
-p(\yV|\hV_{1}) = \sigma(\wM_1\hV_{1}+\bV_1), \quad p(\hV_l|\hV_{l+1}) = \sigma(\wM_{l+1}\hV_{l+1}+\bV_{l+1}) 
+p(\yV|\hV_{1}) \prod_{l=1}^{L-1} p(\hV_{l}|\hV_{l+1}) p(\hV_L),
 \]
-$p(\hV_L) = \prod_{i} \pi_i^{\hV_{Li}}(1-\pi_i)^{1-\hV_{Li}}$
+where
+\begin{align*}
+p(\yV|\hV_{1}) =& \prod_i \sigma(\wM_{1,i}\hV_{1}+\bV_{1,i})^{y_i}\sigma(-\wM_{1,i}\hV_{1}-\bV_{1,i})^{1-y_i},\\ 
+ p(\hV_l|\hV_{l+1}) =& \prod_i \sigma(\wM_{l+1,i}\hV_{l+1}+\bV_{l+1,i})^{h_{l,i}}\sigma(-\wM_{l+1,i}\hV_{l+1}-\bV_{l+1,i})^{1-h_{l,i}}\\
+ p(\hV_L) =& \prod_{i} \pi_i^{h_{Li}}(1-\pi_i)^{1-h_{Li}}
+\end{align*}
 
 \begin{align*}
 \bound = \int_{\hV_1, \ldots, \hV_L} q(\hV_L) \prod_{l=1}^{L-1} p(\hV_l|\hV_{l+1}) \log p(\yV|\hV_1)
+\end{align*}
+\end{frame}
+
+\begin{frame}{Sigmoid Belief Networks}
+Variational Inference of SBN is very hard \citep{MnihGregor2014}:
+\[
+\log p(\yV) \geq \sum_{\hV_1, \ldots, \hV_L} q(\hV_1, \ldots, \hV_L) \log \frac{p(\yV|\hV_{1}) \prod_{l=1}^{L-1} p(\hV_{l}|\hV_{l+1}) p(\hV_L)}{q(\hV_1, \ldots, \hV_L)}
+\]
+
+\begin{align*}
+\bound = \sum_{\hV_1, \ldots, \hV_L} q(\hV_L) \prod_{l=1}^{L-1} p(\hV_l|\hV_{l+1}) \log p(\yV|\hV_1)
 \end{align*}
 \end{frame}
 
@@ -545,7 +570,11 @@ The lower bound is exact \textit{only if} the posterior is same as the prior.
 \begin{align*}
 \log p(y | x) = \int_{h} p(h|x) \log p(y| h) + \KL{p(h|x)}{p(h|x, y)}
 \end{align*}
-
+\vspace{-5mm}
+\[
+p(h|x, y) = \frac{p(y|h) p(h|x)}{\int_{h'} p(y|h') p(h'|x)}
+\]
+\vspace{-5mm}
 $\KL{p(h|x)}{p(h|x, y)}$ is zero, when
 \begin{itemize}
 \item $y$ is independent of $h$, i.e., $p(y|h) = p(y)$.
@@ -574,7 +603,17 @@ Variational Inference:
 \end{align*}
 \end{frame}
 
-\begin{frame}{Variational Gaussian Process}
+\begin{frame}{The bias in variational Sparse GP}
+Variational sparse GP often "under-fit".
+\begin{align*}
+\bound =& \int_{\fV, \uV} p(\fV| \uV, \xM, \zM) q(\uV) \log \frac{p(\yV | \fV) \cancel{p(\fV| \uV, \xM, \zM)} p(\uV | \zM)}{\cancel{p(\fV| \uV, \xM, \zM)} q(\uV)} \\
+=& \int_{\fV, \uV} p(\fV| \uV, \xM, \zM) q(\uV) \log p(\yV | \fV)  - \KL{q(\uV)}{p(\uV| \zM)}\\
+=& \expectation{\log p(\yV | \xM, \uV, \zM)}_{q(\uV)} - \KL{q(\uV)}{p(\uV| \zM)} \\
+& - \expectation{\KL{p(\fV|\xM, \uV, \zM)}{p(\fV|\xM, \yV, \uV, \zM)}}_{q(\uV)}
+\end{align*}
+\end{frame}
+
+\begin{frame}{Flexible variational posterior}
 Consider a generic probabilistic model, e.g., $p(\yV | \fV) p(\fV)$.
 
 Variational lower bound:
@@ -588,7 +627,7 @@ q(\fV) = \int_{\fV} q(\fV|\uV) q(\uV)
 \]
 \end{frame}
 
-\begin{frame}{Variational Gaussian Process}
+\begin{frame}{Auxiliary variable}
 It may not be tractable to compute $ \int_{\fV} q(\fV|\uV) q(\uV)$.
 
 One way to work around is to introduce $\uV$ as an auxiliary variable to the model:
@@ -598,82 +637,172 @@ p(\yV | \fV) p(\fV) p(\uV|\fV)
 Note that we are free to choose the form of $p(\uV|\fV)$ and $q(\uV)$ and $q(\fV|\uV)$.
 \end{frame}
 
-\begin{frame}{}
+\begin{frame}{A further lower bound}
 show the relation between two lower bounds.
 \begin{align*}
-\bound =& \int_{\fV, \uV}q(\fV|\uV) q(\uV) \log \frac{p(\yV | \fV) p(\fV) p(\uV|\fV) }{q(\fV|\uV) q(\uV)} \\
-=& \expectation{\log p(\yV | \fV)}_{q(\fV)} - \KL{q(\fV)}{p(\fV|\xM)} - \expectation{\KL{q(\uV|\fV)}{p(\uV| \fV, \zM, \xM)}}_{q(\fV)}
+\int_{\fV} q(\fV) \log \frac{p(\yV | \fV) p(\fV)}{q(\fV)} =& \int_{\fV, \uV}q(\uV|\fV) q(\fV) \log \frac{p(\yV | \fV) p(\fV) p(\uV|\fV) }{q(\uV|\fV) q(\fV)} \\
+& -  \int_{\fV} q(\fV) \int_{\uV} q(\uV|\fV)  \log \frac{p(\uV|\fV) }{q(\uV|\fV)}
+\end{align*}
+
+\begin{align*}
+\bound = \bound_{\fV, \uV}  - \expectation{\KL{q(\uV|\fV)}{p(\uV|\fV)}}_{ q(\fV)} \geq \bound_{\fV, \uV}
 \end{align*}
 \end{frame}
 
 
-\begin{frame}{In the case of GP}
-\[
-p(\uV|\zM, \fV, \xM) p(\fV| \xM) = p(\fV|\xM, \uV, \zM) p(\uV| \zM)
-\]
+\begin{frame}{In the case of spare GP}
 This leads back to the usual sparse GP bound that we know.
 \begin{align*}
 p(\yV| \fV) &= \gaussianDist{\yV}{\fV}{\sigma^2 \I} \\ 
 p (\fV| \xM) &= \gaussianDist{\fV}{0}{\K(\xM, \xM)} \\
-p(\uV| \zM, \fV, \xM) &= \gaussianDist{\uV}{\K_{uf} \K_{ff}^{-1}\fV}{\K_{uu} - \K_{fu}^\top \K_{ff}^{-1} \K_{fu}}
-\end{align*}
-\begin{align*}
-\bound =& \int_{\fV, \uV} q(\fV, \uV) \log \frac{p(\yV | \fV) p(\fV | \xM) p(\uV| \fV, \zM, \xM) }{q(\fV, \uV)} \\
-=& \expectation{\log p(\yV | \fV)}_{q(\fV)} - \KL{q(\fV)}{p(\fV|\xM)} - \expectation{\KL{q(\uV|\fV)}{p(\uV| \fV, \zM, \xM)}}_{q(\fV)}
-\end{align*}
-
-\end{frame}
-
-\begin{frame}{In the case of sparse GP}
-\begin{align*}
-\bound =& \expectation{\log p(\yV | \xM, \uV, \zM)}_{q(\uV)} - \KL{q(\uV)}{p(\uV| \zM)} \\
-& - \expectation{\KL{p(\fV|\xM, \uV, \zM)}{p(\fV|\xM, \yV, \uV, \zM)}}_{q(\uV)}
+p(\uV| \zM, \fV, \xM) &= \gaussianDist{\uV}{\K_{uf} \K_{ff}^{-1}\fV}{\K_{uu} - \K_{fu}^\top \K_{ff}^{-1} \K_{fu}} \\
+q(\uV | \fV) q(\fV) &= q(\fV | \uV) q(\uV) = p(\fV|\xM, \uV, \zM) q(\uV)
 \end{align*}
 \end{frame}
 
-\begin{frame}{$\zM$ is a variational parameter!}
-The variational sparse GP model is $p(\yV|\fV) p(\fV|\xM, \uV, \zM) p(\uV| \zM)$ with $\uV$ being latent variable. Why $\zM$ is a variational parameter?
-\end{frame}
-
-\begin{frame}{The bias in variational Sparse GP}
-\end{frame}
-
-\begin{frame}{Stochastic Variational Inference}
-\end{frame}
+%\begin{frame}{$\zM$ is a variational parameter!}
+%The variational sparse GP model is $p(\yV|\fV) p(\fV|\xM, \uV, \zM) p(\uV| \zM)$ with $\uV$ being latent variable. Why $\zM$ is a variational parameter?
+%\end{frame}
 
 \begin{frame}{Parallel Sparse Gaussian Process}
+\begin{itemize}
+\item Beyond Approximate the inference method, maybe we could exploit parallelization.
+\item For Gaussian process, it turns out to be very hard, because parallel Cholesky decomposition is very difficult.
+\item \cite{DaiEtAl2014} and \cite{GalEtAl2014} proposes a parallel inference method for sparse GP.
+\end{itemize}
 \end{frame}
 
-\begin{frame}{Distributed Gaussian Processes}
+\begin{frame}{Data Parallelism}
+\begin{itemize}
+\item Consider a training set: $\mathcal{D} = \{(\xV_1, y_1), \ldots,  (\xV_N, y_N)\}$.
+\item Assume there are $C$ computational cores/machines.
+\item A data parallelism algorithm divides the data set into $C$ partitions as evenly as possible: $\mathcal{D} = \bigcup_{c=1}^C \mathcal{D}_c$.
+\item The parallelism happens in the way that the function running on each core only requiring the data from the local partition.
+\end{itemize}
 \end{frame}
 
-\begin{frame}{GPU \& Auto-Differentiation}
-The new era of hardware and software engineering.
+\begin{frame}{A simple example: neural network regression}
+\begin{align*}
+l = \sum_{n=1}^N ||y_n - f_\theta( \xV_n )||^2 = \sum_{c=1}^C \sum_{n_c \in \mathcal{D}_c} ||y_{n_c} -  f_\theta( \xV_{n_c} )||^2
+\end{align*}
+\vspace{-10mm}
+\begin{enumerate}
+\item Each core computes its local objective $l_c = \sum_{n_c \in \mathcal{D}_c} ||y_{n_c} -  f_\theta( \xV_{n_c} )||^2$.
+\item Each core computes the gradient of its local object $\partial l_c/ \partial \theta$.
+\item Aggregate all the local objectives and gradients $l = \sum_{c=1}^C l_c$ and $\partial l/ \partial \theta = \sum_{c=1}^C \partial l_c/ \partial \theta$.
+\item Take a step along the gradient following a gradient descent algorithm.
+\item Repeat Step 1 until converge.
+\end{enumerate}
+\end{frame}
 
-Memory bandwidth:
-GPU(NVidia V100, AWS P3): 900 GB/s
+\begin{frame}{Data Parallelism for Sparse GP}
+The variational lower bound (after applying Woodbury formula) is
+\begin{align*}
+\bound =& -\frac{N}{2}\log 2\pi \sigma^2 +\frac{1}{2} \log \frac{|\K_{uu}|}{|\K_{uu}+\sigma^{-2}\phiM|} -\frac{1}{2\sigma^2}\yV^\top\yV\\
+&+\frac{1}{2\sigma^4}\yV^\top\K_{fu}(\K_{uu} + \phiM)^{-1}\K_{fu}^\top\yV - \frac{1}{2\sigma^2}\phiV +  \frac{1}{2\sigma^2}\tr{\K_{uu}^{-1}\phiM}
+\end{align*}
+where $\phiM = \K_{fu}^\top \K_{fu}$ and $\phiV = \tr{\K_{ff}}$.
+\end{frame}
+
+\begin{frame}{Data Parallelism for Sparse GP}
+\begin{itemize}
+\item The lower bound is not fully distributable like in the simple example.
+\item All the terms involving data can be written as a sum across data points:
+\begin{align*}
+&\yV^\top\yV = \sum_{n=1}^N y_n^2, \quad \yV^\top\K_{fu} = \sum_{n=1}^N y_n \K_{f_n u}, \quad \phiM = \sum_{n=1}^N \K_{f_n u}^\top \K_{f_n u}\\
+&\phiV = \sum_{n=1}^N\K_{f_n f_n}, \text{where } \K_{f_n u} = \K(\xV_n, \zM), \quad \K_{f_n f_n} = \K(\xV_n, \xV_n).
+\end{align*}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Data Parallelism for Sparse GP}
+\begin{enumerate}
+\item \textbf{[local]} Compute all the data related terms locally: $\yV_c^\top\yV_c$, $\yV_c^\top\K_{f_c u}$, $\phiM_c$ and $\phiV_c$.
+\item \textbf{[global]} Aggregate all the local terms and compute the lower bound $\bound$ on one node.
+\item \textbf{[global]} Compute the gradient of the bound w.r.t. the model parameters.
+\item \textbf{[global]} Compute the gradient w.r.t. the local terms $\partial \bound/\partial \K_{f_c u}$, $\partial \bound/\partial \phiM_c$ and $\partial \bound/\partial \phiV_c$ and broadcast to individual nodes.
+\item \textbf{[local]} Compute the gradient contribution of the local terms and aggregate the local gradients into the final gradient.
+\item \textbf{[global]} Take a gradient step and repeat Step 1.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Data Parallelism for Sparse GP}
+\begin{center}
+\includegraphics[width=0.48\textwidth]{parallel_scaling.pdf} 
+\hfill
+\includegraphics[width=0.48\textwidth]{parallel_portion.pdf} 
+\end{center}
+\end{frame}
+
+%\begin{frame}{Stochastic variational Gaussian process}
+%\end{frame}
+
+%\begin{frame}{Distributed Gaussian Processes}
+%\end{frame}
+
+\begin{frame}{The emerge of deep learning platforms}
+\begin{itemize}
+\item Deep learning platforms such as Theano, Tensorflow, Torch, Caffe, MXNet emerge in recent years.
+\item It standardizes deep neural networks programming.
+\item Auto-differentiation enables the flexible construction of DNNs.
+\item GPU acceleration enables scalability for real world applications.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{GPU for machine learning}
+\begin{columns}
+\begin{column}[t]{0.6\linewidth}
+\small
+\begin{itemize}
+\item Von Neumann architecture is not suitable for machine learning.
+\item Memory bandwidth: \\
+GPU(NVidia V100, AWS P3): 900 GB/s \\
 CPU (Intel Xeon E5-2660 v3, AWS C4): 68 GB/s
+\end{itemize}
+\end{column}
+%\hfill
+\begin{column}[t]{0.38\linewidth}
+\begin{center}
+\includegraphics[width=\textwidth]{memory_hierarchy.png} \\
+\includegraphics[width=\textwidth]{alexnet_architecture.png} \\
+\end{center}
+\tiny
+GTX 580 GPU has only 3GB of memory
+\end{column}
+\end{columns}
 \end{frame}
 
-\begin{frame}{GP Libraries}
+\begin{frame}{Probabilistic Programming on deep learning platforms}
+
+\begin{itemize}
+\item Edward \url{http://edwardlib.org}
+\item PyMC3 \url{https://github.com/pymc-devs/pymc3}
+\item pyprob \url{https://github.com/probprog/pyprob}
+\item Pyro \url{https://github.com/uber/pyro}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{GP on deep learning platforms}
 GPflow \url{https://github.com/GPflow/GPflow}
 
 GPyTorch \url{https://github.com/cornellius-gp/gpytorch}
 \end{frame}
 
-\begin{frame}{Probabilistic Programming}
 
-PyMC3
 
-Edward
-
-Pyro
-
-pyprob
-\end{frame}
-
-\begin{frame}{MXFusion}
-Modular Probabilistic Programming + GP
+\begin{frame}{MXFusion and GPy2}
+\begin{itemize}
+\item Beyond GPU acceleration and auto-differentiation
+\item Use Gaussian process as a building block.
+\item MXFusion: modular probabilistic programming language 
+\item GPy2 (a new interface based on MXFusion): 
+\begin{itemize}
+\item writing new kernel with auto-differentiation
+\item scalable inference on GPU
+\item Construct hybrid GP, deep GP, recurrent GP by re-using GP module with scalable approximate inference.
+\end{itemize}
+\end{itemize}
 \end{frame}
 
 \begin{frame}{}
