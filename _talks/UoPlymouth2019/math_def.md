@@ -1,1 +1,0 @@
-\newcommand{\yM}{\mathbf{Y}}
