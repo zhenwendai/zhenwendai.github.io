@@ -10,6 +10,10 @@ share: false
     GPSS 2018, Sheffield, UK  
     [[slides]](./slides/gpss2018_slides.pdf)  
 
++   Efficient Modeling of Latent Information in Supervised Learning using Gaussian Processes (2017)  
+    Gaussian Process Approximation Workshop 2017, Berlin, Germany  
+    [[slides]](./slides/gpaw2017_slides.pdf)  
+
 +   Preferential Bayesian Optmization (2017)  
     ICML 2017, Sydney, Australia  
     [[video]](https://vimeo.com/238266775)  
