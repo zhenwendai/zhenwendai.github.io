@@ -18,5 +18,6 @@
 \newcommand{\hV}{\mathbf{h}}
 \newcommand{\bV}{\mathbf{b}}
 \newcommand{\wM}{\mathbf{W}}
+\newcommand{\wV}{\mathbf{w}}
 \newcommand{\phiM}{\mathbf{\Phi}}
 \newcommand{\phiV}{\mathbf{\phi}}
