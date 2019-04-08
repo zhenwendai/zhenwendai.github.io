@@ -42,7 +42,7 @@ $$
 p(\yV | \xM, \hM) p(\hM)
 $$
 
-- Missing information
+- To capture the information missing from $\xM$
   - Missing information in individual data points: flexible uncertainty
   - Missing information shared across multiple data points: multi-output, multi-task, meta-model
 
@@ -107,13 +107,75 @@ $$
 
 - A combination of discriminative and generative model
 
-- A generative model with a fansy likelihood (a discriminative model)
+# View a task as a data point
+
+- The data are collected from multiple tasks:
+$$
+\yV = (\yV_1, \dots, \yV_C), \quad \text{where}\quad \yV_c = (\yV_{1,c}, \dots, \yV_{N_c, c})
+$$
+$$
+\xM = (\xM_1, \dots, \xM_C), \quad \text{where}\quad \xM_c = (\xM_{1,c}, \dots, \xM_{N_c, c})
+$$
+
+- A generative model with a fancy likelihood (a discriminative model)
+$$
+p(\yV_1, \ldots, \yV_C | \xM_1, \ldots, \xM_C, \hV_1, \ldots, \hV_C) p(\hV_1, \ldots, \hV_C)
+$$
+
+<!--
+# Example: Forrester Function
+
+- Extend the Forrester function into a distribution of functions:
+$$
+f(x) = (ax-2)^2\sin(bx-4), \quad a \sim \mathcal{N}(6, 1), \quad b \sim \mathcal{N}(12, 2).
+$$
+
+![](./diagrams/forrester_samples.png){ width=50% }
+
+# Learn a latent space of functions
+
+- Collect a few data points from each function sample (task).
+
+- Learn a latent space of the functions.
+
+-->
+
+# A generative model of functions
+
+- Sample a new function
+$$
+p(y_*|\xV_*, \hV_*, \mathcal{D})
+$$
+
+- Posterior distribution of a new function with a few data points
+$$
+p(y_*|\xV_*, \mathcal{D}, \mathcal{D}_*) = \int p(y_*|\xV_*, \hV_*, \mathcal{D}, \mathcal{D}_*) p(\hV_* | \mathcal{D}, \mathcal{D}_*) \text{d}\hV_*
+$$
+
+# Some technical details
+
+- Implement as Multi-output GP (MOGP)
+
+    - Expand the input vector $\hat{\xV} = (\xV, \hV)$: $\K = k(\hat{\xM}, \hat{\xM})$.
+
+    - Use multiplication of kernels: $\K = \K_x \K_h$, where $\K_x = k_x(\xM, \xM)$ and $\K_h = k_h(\hM, \hM)$.
+
+    - If different tasks share the same set of $\xM$,
+    $$
+    \K = \K_x \otimes \K_h
+    $$
 
 # Applications
 
+- Multi-task/Multi-output learning
+
+- Meta-model for reinforcement learning [@SæmundssonEtAl2018]
+
 - Meta-model for multi-task Bayesian optimization
 
-- Meta-model for reinforcement learning
+- Meta learning
 
+![](./diagrams/rl_graphical_model.png){ width=30% }
+![](./diagrams/rl_examples.png){ width=30% }
 
 # References {.allowframebreaks}
