@@ -7,7 +7,23 @@ share: false
 ---
 
  A full list of my publications can be found on my [Google Scholar](http://scholar.google.com/citations?user=F58CO_QAAAAJ&hl=en) page.
- 
+
+
++   Sungsoo Ahn, Shell Xu Hu, Andreas Damianou, Neil D. Lawrence, **Zhenwen Dai** (2019)  
+    **Variational Information Distillation for Knowledge Transfer**  
+    IEEE Conference on Computer Vision and Pattern Recognition (CVPR)  
+    *To appear*  
+
++   Abdul-Saboor Sheikh, Nicol S. Harper, Jakob Drefs, Yosef Singer, **Zhenwen Dai**, Richard E. Turner, Jörg Lücke (2019)  
+    **STRFs in primary auditory cortex emerge from masking-based statistics of natural sounds**  
+    PLoS computational biology  
+    [[PDF]](https://doi.org/10.1371/journal.pcbi.1006595)  
+
++   **Zhenwen Dai**, Eric Meissner, Neil D. Lawrence (2018)  
+    **MXFusion: A Modular Deep Probabilistic Programming Library**  
+    Neurips 2018 Workshop MLOSS Submission  
+    [[PDF]](https://openreview.net/pdf?id=Hkg1AtaVhm)  
+
 +   Xiaoyu Lu, Javier González, **Zhenwen Dai**, Neil D. Lawrence (2018)  
     **Structured Variationally Auto-encoded Optimization**  
     International Conference on Machine Learning (ICML)  
