@@ -1,0 +1,338 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage{natbib}
+\usepackage{graphicx} % more modern
+\graphicspath{{./diagrams/}}
+\DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+
+% --------------- math notations ---------------
+\input{../GPSS2018/notationDef.tex}
+\input{../GPSS2018/definitions.tex}
+\global\long\def\covarianceScalar{k}
+\global\long\def\weightScalar{p}
+\newcommand{\I}{\identityMatrix}
+\newcommand{\K}{\covarianceMatrix}
+\newcommand{\yM}{\dataMatrix}
+\newcommand{\yV}{\dataVector}
+\newcommand{\yS}{\dataScalar}
+\newcommand{\W}{\weightMatrix}
+\newcommand{\fV}{\mappingFunctionVector}
+\newcommand{\fM}{\mappingFunctionMatrix}
+\newcommand{\zS}{\inducingInputScalar}
+\newcommand{\zV}{\inducingInputVector}
+\newcommand{\zM}{\inducingInputMatrix}
+\newcommand{\uV}{\inducingVector}
+\newcommand{\uM}{\inducingMatrix}
+\newcommand{\xM}{\inputMatrix}
+\newcommand{\xV}{\inputVector}
+\newcommand{\xS}{\inputScalar}
+\newcommand{\bound}{\mathcal{L}}
+\newcommand{\pV}{\weightVector}
+\newcommand{\pM}{\weightMatrix}
+\newcommand{\mM}{\mathbf M}
+%\newcommand{\sM}{\mathbf \Sigma}
+
+\newcommand{\btheta}{\boldsymbol \theta}
+\newcommand{\bR}{\mathbf R}
+\newcommand{\br}{\mathbf r}
+\newcommand{\bZ}{\mathbf Z}
+\newcommand{\bT}{\mathbf T}
+\newcommand{\bz}{\mathbf z}
+\newcommand{\hao}{\hat \alpha^o}
+\newcommand{\amo}{\alpha^o_m}
+\renewcommand{\th}{^\text{th}}
+\newcommand{\prd}[1]{\prod_{#1=1}^{\MakeUppercase #1}}
+\newcommand{\sumover}[1]{\sum_{#1=1}^{\MakeUppercase #1}}
+\newcommand{\znm}{z_{nm}}
+\newcommand{\given}{\,|\,}
+\newcommand{\E}[2]{\mathbb E_{#1} \Big[#2\Big]}
+\renewcommand{\d}{\,\text d}
+\newcommand{\e}{\mathbf e}
+\newcommand{\wM}{\mathbf W}
+\newcommand{\hV}{\mathbf h}
+\newcommand{\hM}{\mathbf H}
+\newcommand{\sM}{\mathbf \Sigma}
+
+\renewcommand{\L}{\mathbf L}
+
+\newcommand{\mauricio}[2]{{\color{blue}#1} {\color{red}#2}}
+
+
+\begin{document}
+\title[LVMOGP] % (optional, only for long titles)
+{Efficient Modeling of Latent Information in Supervised Learning using Gaussian Processes}
+\author[]{Zhenwen Dai \and Mauricio A. \'{A}lvarez \and Neil D. Lawrence}
+\date[2017] % (optional)
+{Gaussian Process Approximation Workshop, 2017}
+\subject{Computer Science}
+
+\frame{\titlepage}
+  \begin{frame}
+  \frametitle{Motivation}
+  \begin{itemize}
+  \item Machine learning has been very successful in providing tools for learning a function mapping from an input to an output.
+  \begin{equation*}
+  y = f(x) + \epsilon
+  \end{equation*}
+  \item The modeling in terms of function mapping assumes a one/many to one mapping between input and output. 
+  \item In other words, ideally the input should contain sufficient information to uniquely determine/disambiguise the output apart from some sensory noise. 
+  \end{itemize}
+  \end{frame}
+
+  \begin{frame}
+  \frametitle{Data: a Combination of Multiple Scenarios}
+  \begin{itemize}
+  \item In most of cases, this assumption does not hold.
+  \item We often collect data as a combination of multiple scenarios, e.g., the voice recording of multiple persons, the images taken from different models of cameras.
+  \item We only have \emph{some labels} to identify these scenarios in our data, e.g., we can have the names of the speakers and the specifications of the used cameras. 
+  \item These labels are represented as \emph{categorical} data in some database.
+  \end{itemize}
+  \end{frame}
+  
+    \begin{frame}
+  \frametitle{How to model these labels?}
+  \begin{itemize}
+  \item A common practice in this case would be to ignore the difference of scenarios, but fails to model the corresponding variations.
+  \item Model each scenario separately. 
+  \item Use a one-hot encoding.
+  \item In both of these cases, generalization/transfer to new scenario is not possible.
+  \item \textbf{Any better solutions?} Latent variable models!
+  \end{itemize}
+  \end{frame}
+
+
+  \begin{frame}
+    \frametitle{A Toy Problem: The Braking Distance of a Car}
+    \begin{itemize}
+    \item To model the braking distance of a car in a \emph{completely data-driven} way.
+    \item Input: the speed when starting to brake
+    \item Output: the distance that the car moves before fully stopped
+    \item We know that the braking distance depends on the friction coefficient.
+    \item We can conduct experiments with a set of different tyre and road conditions, each associated with a condition \emph{ID}.
+    \item How can we model the relation between the speed and distance in a data-driven way, so that we can extrapolate to a new condition with \emph{only one experiment}?
+    \end{itemize}
+    \begin{center}
+    \includegraphics[width=.3\linewidth]{braking_diagram} 
+    \end{center}
+  \end{frame}
+  
+  \begin{frame}
+    \frametitle{Common Modeling Choices with Non-parametric Regression}
+    \begin{itemize}
+    \item A straight-forward modeling choice to ignore the difference in conditions. The relation between the speed and distance can be modeled as
+\begin{equation*}
+y = f(x) + \epsilon,\quad f \sim GP, \label{eqn:simple_model}
+\end{equation*}
+    \item Alternatively, we can model each condition separately, i.e., $f_d \sim GP, d=1,\ldots,D$.
+    \end{itemize}
+    \begin{center}
+    \includegraphics[width=.35\linewidth]{braking_all} ~ 
+    \includegraphics[width=.35\linewidth]{braking_separate}
+    \end{center}
+  \end{frame}
+
+  \begin{frame}
+    \frametitle{Modeling the Conditions Jointly}
+    \begin{itemize}
+    \item A probabilistic approach is to assume a latent variable.
+    \item With a latent variable $\hV_d$, the relation between speed and distance for the condition $d$ is, then, modeled as
+\begin{equation}
+y = f(x, \hV_d) + \epsilon,\quad f \sim GP,\quad \hV_d \sim \mathcal{N}(0,\I). \label{eqn:model_latentinfo}
+\end{equation}
+    \item A special Bayesian GPLVM?
+    \begin{itemize}
+    \item  Efficiency, $O(N^3D^3)$ or $O(NDM^2)$. 
+    \item The balance among different conditions in inference.
+     \end{itemize}
+    \end{itemize}
+    \begin{center}
+    \includegraphics[width=.35\linewidth]{braking_lvmogp} ~ 
+    \includegraphics[width=.22\linewidth]{braking_latent_var}
+    \end{center}
+  \end{frame}
+
+  \begin{frame}
+    \frametitle{Latent Variable Multiple Output Gaussian Processes (LVMOGP)}
+    \begin{itemize}
+    \item We propose a new model which assumes the covariance matrix can be decomposed as a Kronecker product of the covariance matrix of the latent variables $\K^H$ and the covariance matrix of the inputs $\K^X$. 
+    \item The probabilistic distributions of LVMOGP is defined as
+\begin{equation}
+p(\yM_: | \fM_:) = \gaussianDist{\yM_:}{\fM_:}{\sigma^2\I}, \quad p(\fM_:| \xM, \hM) = \gaussianDist{\fM_:}{0}{\K^H \otimes \K^X},  \label{eqn:lomogp}
+\end{equation}
+where the latent variables $\hM$ have unit Gaussian priors, $\hV_d \sim \mathcal{N}(0,\I)$
+   \item This is a special case of the model in (\ref{eqn:model_latentinfo}).
+  \end{itemize}
+  \end{frame}
+
+  \begin{frame}
+    \frametitle{Scalable Variational Inference}
+    \begin{itemize}
+    \item Sparse GP approximation with $\uM \in \mathbb{R}^{M_X \times M_H}$:
+    \begin{equation*}
+\log p(\yM|\xM, \hM) \geq \expectationDist{\log p(\yM_:|\fM_:)}{q(\fM|\uM)q(\uM)} + 
+\expectationDist{\log \frac{p(\fM|\uM, \xM, \hM)  p(\uM)}{q(\fM|\uM)q(\uM)}}{q(\fM|\uM)q(\uM)} 
+\end{equation*}
+   \item Lower bounding the marginal likelihood
+   \begin{equation}
+\log p(\yM|\xM) \geq  \mathcal{F} -\KL{q(\uM)}{p(\uM)} -\KL{q(\hM)}{p(\hM)},\label{eqn:lower_bound}
+\end{equation}
+  \end{itemize}
+  \end{frame}
+  
+  \begin{frame}
+    \frametitle{Closed-form Variational Lower Bound (SVI-GP)}
+    \begin{itemize}
+    \item It is known that the optimal posterior distribution of $q(\uM)$ is a Gaussian distribution \citep{Titsias2009, MatthewsEtAl2016}. With an explicit Gaussian definition of $q(\uM) = \gaussianDist{\uM}{\mM}{\sM^U}$, the integral in $\mathcal{F}$ has a closed-form solution:
+\begin{align*}
+\mathcal{F} = 
+&-\frac{ND}{2}\log 2\pi \sigma^2 -\frac{1}{2\sigma^2} \yM_:^\top\yM_: -\frac{1}{2\sigma^2}\Tr\left(\K^{-1}_{uu} \Phi \K^{-1}_{uu} (\mM_{:}\mM_{:}^\top+\sM^{U}) \right)  \nonumber\\
+&+\frac{1}{\sigma^2}\yM_:^\top \Psi \K^{-1}_{uu} \mM_{:}  -\frac{1}{2\sigma^2} \left( \psi -\tr{\K^{-1}_{uu} \Phi} \right) \label{eqn:F_3}
+\end{align*}
+where $\psi = \expectationDist{\tr{\K_{ff}}}{q(\hM)}$, $\Psi = \expectationDist{\K_{fu}}{q(\hM)}$ and $\Phi = \expectationDist{\K_{fu}^\top\K_{fu}}{q(\hM)}$
+\item The computational complexity of the closed-form solution is $O(NDM_X^2M_H^2)$.
+  \end{itemize}
+  \end{frame}
+  
+    \begin{frame}
+    \frametitle{More Efficient Formulation}
+    \begin{itemize}
+    \item The Kronecker product decomposition of covariance matrices are not exploited.
+    \item Firstly, the expectation computation can be decomposed,
+\begin{equation}
+\psi =  \psi^H \tr{\K^X_{ff}}, \quad
+\Psi = \Psi^H \otimes \K^X_{fu}, \quad
+\Phi = \Phi^H \otimes \left((\K^X_{fu})^\top \K^X_{fu}) \right),
+\end{equation}
+where $\psi^H = \expectationDist{\tr{\K^H_{ff}}}{q(\hM)}$, $\Psi^H = \expectationDist{\K^H_{fu}}{q(\hM)}$ and $\Phi^H = \expectationDist{(\K^H_{fu})^\top\K^H_{fu}}{q(\hM)}$.
+  \end{itemize}
+  \end{frame}
+  
+      \begin{frame}
+    \frametitle{More Efficient Formulation}
+    \begin{itemize}
+    \item Secondly, we assume a Kronecker product decomposition of the covariance matrix of $q(\uM)$, i.e., $\Sigma^U = \Sigma^H \otimes \Sigma^X$.
+    \item The number of variational parameters in the covariance matrix from $M_X^2M_H^2$ to $M_X^2 + M_H^2$.
+    \item The direct computation of Kronecker products is completely avoided.
+   \begin{align*}
+\mathcal{F}
+=& -\frac{ND}{2}\log 2\pi \sigma^2 -\frac{1}{2\sigma^2} \yM_:^\top\yM_: \\
+&-\frac{1}{2\sigma^2}\tr{ \mM^\top ((\K_{uu}^X)^{-1} \Phi^C (\K_{uu}^X)^{-1}) \mM (\K_{uu}^H)^{-1} \Phi^H (\K_{uu}^H)^{-1} }\nonumber \\
+ &-\frac{1}{2\sigma^2}\tr{ (\K_{uu}^H)^{-1} \Phi^H (\K_{uu}^H)^{-1} \sM^{H} } \tr{ (\K_{uu}^X)^{-1} \Phi^X (\K_{uu}^X)^{-1} \sM^{X}} \nonumber \\
+& \ldots
+\end{align*}
+  \end{itemize}
+  \end{frame}
+  
+      \begin{frame}
+    \frametitle{Prediction}
+    \begin{itemize}
+    \item Given both a set of new inputs $\xM^*$ with a set of new scenarios $\hM^*$, the prediction of noiseless observation $\fM^*$ can be computed in closed-form.
+    \begin{align*}
+q(\fM_{:}^* | \xM^*, \hM^*) =& \int p(\fM_{:}^* | \uM_{:},  \xM^*, \hM^*) q(\uM_{:}) \dif{\uM_{:}} \\
+=& \gaussianDist{\fM_{:}^*}{\K_{f^* u}\K_{uu}^{-1}\mM_{:}}{\K_{f^*f^*}-\K_{f^*u}\K_{uu}^{-1}\K_{f^*u}^\top+\K_{f^* u}\K_{uu}^{-1}\sM^{U}\K_{uu}^{-1}\K_{f^* u}^\top},  
+\end{align*}
+    \item For a regression problem, we are often more interested in predicting for the existing condition from the training data. We can approximate the prediction by integrating the above prediction equation with $q(\hM)$,
+\begin{align*}
+q(\fM_{:}^* | \xM^*) = \int q(\fM_{:}^* | \xM^*, \hM) q(\hM) \dif{\hM}.
+\end{align*}
+  \end{itemize}
+  \end{frame}
+
+      \begin{frame}
+    \frametitle{Missing Data}
+    \begin{itemize}
+    \item The model described previously assumes that for $N$ different inputs, we observe them in all the $D$ different conditions.
+    \item In real world problems, we often collect data at a different set of inputs for each scenario, i.e., for each condition $d$, $d=1, \dots, D$.
+    \item The proposed model can be extended to handle this case by reformulating the $\mathcal{F}$ as
+\begin{align*}
+\mathcal{F} = \sum_{d=1}^D
+&-\frac{N_d}{2}\log 2\pi \sigma_d^2 -\frac{1}{2\sigma^2_d} \yM_d^\top\yM_d -\frac{1}{2\sigma^2_d}\Tr\left(\K^{-1}_{uu} \Phi_d \K^{-1}_{uu} (\mM_{:}\mM_{:}^\top+\sM^{U}) \right)  \nonumber\\
+&+\frac{1}{\sigma^2_d}\yM_d^\top \Psi_d \K^{-1}_{uu} \mM_{:}  -\frac{1}{2\sigma^2_d} \left( \psi_d -\tr{\K^{-1}_{uu} \Phi_d} \right),
+\end{align*}
+where $\Phi_d = \Phi_d^H \otimes \left((\K^X_{f_du})^\top \K^X_{f_du}) \right)$, $\Psi_d = \Psi_d^H \otimes \K^X_{f_du}$, $\psi_d = \psi_d^H \otimes \tr{\K^X_{f_df_d}}$
+  \end{itemize}
+  \end{frame}
+
+      \begin{frame}
+    \frametitle{Related Works}
+    \begin{itemize}
+    \item Multiple Output Gaussian Processes /Multi-task Gaussian proccesses: \citet{Alvarez2012}  \citep{Goovaerts1997}  \citep{Bonilla2007}
+    \item Our method reduces
+computationally complexity to $O(\max(N,M_H)\max(D,M_X)\max(M_X,M_H))$ when there are no missing data.
+\item An additional advantage of our method is that it can easily be parallelized using mini-batches like in \citep{HensmanEtAl2016}.
+\item The idea of modeling latent information about different conditions jointly with the modeling of data points is related to the style and content model by \cite{TenenbaumFree2000}.
+  \end{itemize}
+  \end{frame}
+  
+      \begin{frame}
+    \frametitle{Experiments on Synthetic Data}
+    \begin{itemize}
+    \item 100 different uniformly sampled input locations (50 for training and 50 for testing), where each corresponds to 40 different conditions. An observation noise with variance 0.3 is added onto the training data
+    \item We compare LVMOGP with two other methods: GP with independent output dimensions (GP-ind) and LMC (with a full rank coregionalization matrix).
+\item First dataset without missing data.
+
+  \end{itemize}
+      \begin{center}
+          \includegraphics[width=.3\linewidth]{syn_results}
+     \end{center}
+  \end{frame}
+
+      \begin{frame}
+    \frametitle{Experiments on Synthetic Data with Missing Data}
+    \begin{itemize}
+    \item To generate a dataset with uneven numbers of training data in different conditions, we group the conditions into 10 groups. Within each group, the numbers of training data in four conditions are generated through a three-step stick breaking procedure with a uniform prior distribution (200 data points in total).
+    \item We compare LVMOGP with two other methods: GP with independent output dimensions (GP-ind) and LMC (with a full rank coregionalization matrix).
+    \item GP-ind: $0.43\pm0.06$, LMC:$0.47\pm0.09$, LVMOGP $0.30\pm0.04$
+  \end{itemize}
+      \begin{center}
+        \includegraphics[width=.3\linewidth]{syn_md_results}
+        \includegraphics[width=.32\linewidth]{syn_md_example}
+     \end{center}
+  \end{frame}
+  
+       \begin{frame}
+    \frametitle{Experiment on Servo Data}
+    \begin{itemize}
+    \item We apply our method to a servo modeling problem, in which the task to predict the rise time of a servomechanism in terms of two (continuous) gain settings and two (discrete) choices of mechanical linkages \citep{Quinlan1992}.
+    \item The two choices of mechanical linkages: 5 types of motors and 5 types of lead screws.
+    \item We take 70\% of the dataset as training data and the rest as test data, and randomly generated 20 partitions.
+    \item GP-WO: $1.03\pm0.20$, GP-ind: $1.30\pm0.31$, GP-OH: $0.73\pm0.26$, LMC:$0.69\pm0.35$, LVMOGP $0.52\pm0.16$
+  \end{itemize}
+      \begin{center}
+        \includegraphics[width=.32\linewidth]{servo_data}~
+        \includegraphics[width=.32\linewidth]{servo_results}~
+        \includegraphics[width=.29\linewidth]{servo_levelset}
+     \end{center}
+  \end{frame}
+
+       \begin{frame}
+    \frametitle{Experiment on Sensor Imputation}
+    \begin{itemize}
+    \item We apply our method to impute multivariate time series data with massive missing data. We take a in-house multi-sensor recordings including a list of sensor measurements such as temperature, carbon dioxide, humidity, etc. \citep{ZamoraEtAl2014}.
+    \item The measurements are recorded every minutes for roughly a month and smoothed with 15 minute means.
+    \item We mimic the scenario of massive missing data by randomly taking out 95\% of the data entries and aim at imputing all the missing values.
+    \item GP-ind: $0.85\pm0.09$, LMC:$0.59\pm0.21$, LVMOGP $0.45\pm0.02$
+  \end{itemize}
+      \begin{center}
+\includegraphics[width=.3\linewidth]{sml2010_results}
+     \end{center}
+  \end{frame}
+
+       \begin{frame}
+    \frametitle{Conclusion}
+    \begin{itemize}
+    \item The common practices such as one-hot encoding cannot efficiently model the relation among different conditions and are not able to generalize to a new condition at test time. 
+    \item We propose to solve this problem in a principled way, where we learn the latent information of conditions into a latent space as part of the regression model. 
+    \item By exploiting the Kronecker product decomposition in the variational posterior, our inference method are able to achieve the same computational complexity as sparse GP with independent observations. 
+    \item As shown repeatedly in the experiments, the Bayesian inference of the latent variables in LVMOGP avoids the overfitting problem in LMC.  \end{itemize}
+  \end{frame}
+ 
+ \begin{frame}
+  \frametitle{Reference}
+  \footnotesize
+\bibliographystyle{plainnat}
+\bibliography{./multi_out}
+\end{frame}
+
+\end{document}
+
