@@ -12,7 +12,7 @@ share: false
 +   Sungsoo Ahn, Shell Xu Hu, Andreas Damianou, Neil D. Lawrence, **Zhenwen Dai** (2019)  
     **Variational Information Distillation for Knowledge Transfer**  
     IEEE Conference on Computer Vision and Pattern Recognition (CVPR)  
-    *To appear*  
+    [[PDF]](http://openaccess.thecvf.com/content_CVPR_2019/html/Ahn_Variational_Information_Distillation_for_Knowledge_Transfer_CVPR_2019_paper.html)  
 
 +   Abdul-Saboor Sheikh, Nicol S. Harper, Jakob Drefs, Yosef Singer, **Zhenwen Dai**, Richard E. Turner, Jörg Lücke (2019)  
     **STRFs in primary auditory cortex emerge from masking-based statistics of natural sounds**  
