@@ -1,0 +1,483 @@
+%\documentclass[serif, mathserif, professionalfont]{beamer}
+\documentclass[13pt,aspectratio=1610]{beamer}
+%\usetheme{BlueGrey}
+%\usenavigationsymbolstemplate{}
+%\usetheme[
+%        menuwidth={0.3\paperwidth}
+%        ]{amznbln}
+
+\setbeamercovered{transparent=20}
+
+\setlength{\parskip}{0.05cm}
+
+\setlength{\parskip}{1em}
+
+%\documentclass{beamer}
+
+
+
+\usepackage{algorithmic,multirow,colortbl}
+\usepackage{animate}
+\usepackage{tikz}
+\usepackage{natbib}
+\newcommand{\tikzmark}[1]{\tikz[overlay, remember picture] \coordinate (#1);}
+\usepackage{appendixnumberbeamer}
+
+%\usetheme[
+%        menuwidth={0.3\paperwidth}
+ %       ]{amznbln}
+
+%\setbeamercolor{framesubtitle}{fg=red}
+%\addtobeamertemplate{frametitle}{}{%
+%  \ifx\insertframesubtitle\@empty\else%
+%  \usebeamerfont{framesubtitle}%
+%  \usebeamercolor[fg]{framesubtitle}%
+%  \insertframesubtitle%
+%  \fi%
+%}
+
+\setbeamercovered{transparent=20}
+\input{./definitions.tex}
+\input{./notationDef.tex}
+
+\usepackage{xspace}
+\newcommand{\acr}[1]{\textsc{#1}\xspace}
+\newcommand{\gp}{\acr{gp}}
+\newcommand{\gps}{\acr{gps}}
+\newcommand{\bo}{\acr{bo}}
+\newcommand{\smac}{\acr{smac}}
+
+\newcommand{\ud}{\mathrm{d}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\V}{\mathbb{V}}
+\newcommand{\bL}{\textbf{L}}
+\newcommand{\bI}{\textbf{I}}
+\newcommand{\vk}{\vec{k}}
+\newcommand{\vL}{\vec{\Lambda}}
+\newcommand{\xmin}{x_{\min}}
+\newcommand{\pmin}{p_{\min}}
+\newcommand{\fmin}{f_{\min}}
+\newcommand{\pfmin}{p_{f_{\min}}}
+\renewcommand{\vec}{\boldsymbol}
+\newcommand{\fun}[1]{\mathsf{#1}}
+\renewcommand{\O}{\mathcal{O}}
+\newcommand{\GP}{\mathcal{GP}}
+\newcommand{\N}{\mathcal{N}}
+\newcommand{\Id}{\vec{I}}
+\newcommand{\II}{\mathbb{I}}
+\newcommand{\future}{\mathcal{F}}
+\newcommand{\IR}{\mathbb{R}}
+\newcommand{\argmin}{\operatorname*{arg\: min}}
+\newcommand{\argmax}{\operatorname*{arg\: max}}
+\newcommand{\chol}{\operatorname{\mathsf{C}}}
+\newcommand{\xst}{x_{\ast}}
+\newcommand{\yst}{y_{\ast}}
+\newcommand{\eqdef}{\stackrel{\mathclap{\normalfont\mbox{def}}}{=}}
+\newcommand{\I}{\mathcal{I}}
+
+
+%\newcommand{\acr}[1]{\textsc{#1}\xspace}
+\newcommand{\dpp}{\acr{dpp}}
+\newcommand{\us}{\acr{pbo}}
+\newcommand{\direct}{\acr{direct}}
+\newcommand{\lbfgs}{\acr{l-bfgs}}
+\newcommand{\map}{\acr{map}}
+\newcommand{\ep}{\acr{ep}}
+\newcommand{\mpi}{\acr{mpi}}
+\newcommand{\el}{\acr{el}}
+\newcommand{\lcb}{\acr{gp-lcb}}
+\newcommand{\cei}{\acr{cei}}
+\newcommand{\ei}{\acr{ei}}
+\newcommand{\msbm}{\acr{msbm}}
+\newcommand{\random}{\acr{ramdom}}
+\newcommand{\thompsom}{\acr{thompsom}}
+\newcommand{\pe}{\acr{pe}}
+\newcommand{\dts}{\acr{dts}}
+\newcommand{\ibo}{\acr{ibo}}
+
+
+\graphicspath{{./}{./diagrams/}}
+\newcommand{\todiagrams}{./diagrams/}
+\newcommand*{\toslides}{../slides}
+
+
+\begin{document}
+\title{Preferential Bayesian Optimization}
+\author{Javier Gonz\'alez, \textbf{Zhenwen Dai}, Andreas Damianou, Neil D. Lawrence}
+\institute{@ICML 2017, Sydney, Australia}
+%\date{Tutorial @AMLC 2017
+%\begin{center}
+%\vspace{-0.3cm}
+%\includegraphics[width=.2\textwidth]{logo.pdf}
+%\end{center}}
+%\institute{Tutorial @ AMLC 2017, Seattle}
+\frame{\maketitle}
+
+
+\begin{frame}{My Colleagues}
+\begin{minipage}{0.3\textwidth}
+\centering 
+\includegraphics[width=.8\textwidth]{javier.jpeg} \\
+Javier Gonz\'alez 
+\end{minipage} ~
+\begin{minipage}{0.3\textwidth}
+\centering 
+\includegraphics[width=.8\textwidth]{andreas.jpeg} \\
+Andreas Damianou
+\end{minipage} ~
+\begin{minipage}{0.3\textwidth}
+\centering 
+\includegraphics[width=.81\textwidth]{neil.jpeg} \\
+Neil D. Lawrence
+\end{minipage}
+
+\end{frame}
+
+% ====
+
+\begin{frame}{Motivation}
+
+\begin{itemize}
+\item Bayesian Optimization aims at searching for the global minimum of an expensive function $g$,
+\begin{equation*}\label{eq:min_problem}
+\latentVector_{min} = \arg \min_{\latentVector \in {\mathcal X}} g(\latentVector).
+\end{equation*}
+
+\item What if the function $g$ is not directly measurable?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Preference vs. Rating}
+
+\begin{itemize}
+\item The objective function of many tasks are difficult to precisely summarize into a single value.
+\item Comparison is almost always easier than rating for humans.
+\item Such observation has been exploited in A/B testing.
+\end{itemize}
+\centering
+\vspace{-5mm}
+\includegraphics[width=0.6\textwidth]{A-B_testing_simple_example.png}
+\end{frame}
+
+\begin{frame}{BO via Preference}
+
+\begin{itemize}
+\item Beyond a single A/B testing.
+\item To optimize a system via tuning this configuration, e.g., the font size, background color of a website.
+\item The objective such as customer experience is not directly measurable
+\item Compare the objective with two different configurations. 
+\item The task is to search for the best configuration by iteratively suggesting pairs of configurations and observing the results of comparisons.
+\end{itemize}
+\centering
+\vspace{-5mm}
+\includegraphics[width=0.6\textwidth]{A-B_testing_simple_example.png}
+\end{frame}
+
+
+\begin{frame}{Problem Definition}
+\begin{itemize}
+\item To find the minimum of a latent function $g(x), x \in {\mathcal X}$.
+\item Observe only whether $g(\inputVector)<g(\inputVector')$ or not, for a \emph{duel} $[\inputVector,\inputVector'] \in {\mathcal X} \times {\mathcal X}$.
+\item The outcomes are binary: \emph{true} or \emph{false}.
+\item The outcomes are \emph{stochastic}.
+\end{itemize}
+
+\centering 
+\includegraphics[width=.6\textwidth]{forrester_xx.png}
+\end{frame}
+
+\begin{frame}{Preference Function}
+\begin{minipage}{0.5\textwidth}
+\begin{itemize}
+\item In this work, the probabilistic distribution is assumed to Bernoulli: \\
+\begin{align*} &p(y \in \{0,1\} | [\inputVector,\inputVector'])= \pi^y(1-\pi)^{1-y},\\ 
+&\pi = \sigma\Big(g(\inputVector') - g(\inputVector)\Big).
+\end{align*}
+\item $\pi$ is referred to as a \emph{preference function}.
+\item A Preferential Bayesian optimization algorithm will propose a sequence of \emph{duels} that helps efficiently localize the minimum of a latent function $g( \inputVector)$.
+\end{itemize}
+\end{minipage}
+~
+\begin{minipage}{.45\textwidth}
+\centering 
+
+\includegraphics[width=.9\textwidth]{forrester.pdf}
+
+\includegraphics[width=.9\textwidth]{duel_space.pdf} 
+\end{minipage}
+
+\end{frame}
+
+%\begin{frame}{A Concrete Example}
+%\begin{minipage}{0.5\textwidth}
+%\begin{itemize}
+%\item 1D Forrester function:
+%$$g(x) = (6x-2)^2\sin(12x-4)$$
+%\item Leads to a 2D preference function $\pi$.
+%\end{itemize}
+%\includegraphics[width=1\textwidth]{forrester.pdf} 
+%\end{minipage}
+%~
+%\begin{minipage}{.45\textwidth}
+%\centering 
+%
+%\includegraphics[width=1\textwidth]{duel_space.pdf} 
+%\end{minipage}
+%\end{frame}
+
+\begin{frame}{A Surrogate Model}
+\begin{minipage}{0.65\textwidth}
+
+\begin{itemize}
+%\item The evaluation of preference function requires the \emph{latent} function $g(\latentVector)$.
+\item The preference function is not observable.
+\item Only observe a few comparisons. 
+\item Need a surrogate model to guide the search.
+\item Two choices:
+\begin{itemize}
+\item  a surrogate model for the \emph{latent} function (like in standard BO). \citep{Brochu:2010, GuoEtAl2010}
+\item a surrogate model for the preference function
+ \end{itemize}
+\end{itemize}
+\end{minipage}
+%
+\begin{minipage}{0.33\textwidth}
+\centering 
+\includegraphics[width=1\textwidth]{duel_space.pdf} \\
+\includegraphics[width=.93\textwidth]{exp_y_star_cropped.pdf} 
+\end{minipage}
+\end{frame}
+
+\begin{frame}{A Surrogate Model of Preference Model}
+\begin{minipage}{0.65\textwidth}
+
+\begin{itemize}
+\item We propose to build a surrogate model for the preference function.
+\item Pros: easy to model (Gaussian process Binary Classification is used:)
+$$p(y_{\star} = 1 | \dataSet,  [\inputVector,\inputVector'], \theta) 
+= \int \sigma(f_{\star}) p(f_{\star} | \dataSet, [\latentVector_{\star},\latentVector_{\star}'], \theta) df_{\star}$$
+\item Pros: flexible latent function (e.g., non-stationality).
+\item Cons: the minimum of the latent function is not directly accessible
+\end{itemize}
+\end{minipage}
+%
+\begin{minipage}{0.33\textwidth}
+\centering 
+\includegraphics[width=1\textwidth]{duel_space.pdf} \\
+\includegraphics[width=.93\textwidth]{exp_y_star_cropped.pdf} 
+\end{minipage}
+\end{frame}
+
+\begin{frame}{Who is the winner (the minimum)?}
+\begin{itemize}
+%\item \emph{normalised Copeland score}, already used in the literature of raking methods \citep{NIPS2015_6023} $S(\inputVector)= \text{Vol} ({\mathcal X})^{-1} \int_{\mathcal X} \mathbb{I}_{ \left\{\pi_{f}([\inputVector,\inputVector'])\geq0.5 \right\}} d\inputVector',$
+\item The minimum beats \emph{all} the other locations on average.
+\item Extending an idea from armed-bandits \citep{NIPS2015_6023}, we define the \emph{soft-Copeland} score as, (the average winning probability),
+\begin{equation*}
+C(\inputVector)= \text{Vol} ({\mathcal X})^{-1} \int_{\mathcal X} \pi_{f}([\inputVector,\inputVector']) d\inputVector',
+\end{equation*}
+\item The optimum of $g(\inputVector)$ can be estimated as, denoted as the \emph{Condorcet} winner,
+$$x_{c} = \arg \max_{\latentVector \in {\mathcal X}} C(\latentVector),$$
+\end{itemize}
+%
+\centering
+\vspace{-5mm}
+\includegraphics[width=0.75\textwidth]{condorcet.pdf}
+\end{frame}
+
+\begin{frame}{The current estimation of minimum}
+\begin{itemize}
+\item Only have a surrogate model of preference function.
+\item Estimate the \emph{soft-Copeland} score from the surrogate model and get an approximate \emph{Condorcet} winner.
+\item Note that the approximated \emph{Condorcet} winner may \emph{not} be the optimum of $g(\inputVector)$.
+\end{itemize}
+%
+%\centering
+%\includegraphics[width=0.75\textwidth]{condorcet.pdf}
+\end{frame}
+
+
+\begin{frame}{Acquisition Function}
+\begin{minipage}{0.65\textwidth}
+\begin{itemize}
+\item Existing Acq. Func. are not \emph{applicable}.
+\item They are designed to work with a surrogate model of the objective function.
+\item In PBO, the surrogate model does not directly represent the \emph{latent} objective function.
+\item We need a new Acq. Func. for duels!
+\end{itemize}
+\end{minipage}
+%
+\begin{minipage}{0.33\textwidth}
+\centering 
+\includegraphics[width=1\textwidth]{EI.jpeg} \\
+\includegraphics[width=.93\textwidth]{exp_y_star_cropped.pdf} 
+\end{minipage}
+\end{frame}
+
+\begin{frame}{Pure Exploration Acquisition Function (PBO-PE)}
+\begin{minipage}{0.65\textwidth}
+\begin{itemize}
+\item The common pure explorative acq. func., \emph{i.e.} $\V[y]$, does not work.
+\item Propose a pure explorative acq. func. as the variance (uncertainty) of the ``winning" probability of a duel:
+$$
+\V[ \sigma(f_{\star})]  = \int \left(\sigma(f_{\star}) - \E[ \sigma(f_{\star})] \right)^2 p (f_{\star} | \dataSet,  [\inputVector,\inputVector']) df_{\star} 
+$$
+\end{itemize}
+\end{minipage}
+%
+\begin{minipage}{0.33\textwidth}
+\centering 
+\includegraphics[width=0.95\textwidth]{var_y_star_cropped.pdf} \\
+\includegraphics[width=0.95\textwidth]{var_f_star_cropped.pdf}
+\end{minipage}
+\end{frame}
+
+
+
+\begin{frame}{Acquisition Function: PBO-DTS}
+To select the next duel $[\inputVector_{next}, \inputVector_{next}']$:
+\begin{enumerate}
+\item Draw a sample from surrogate model
+\item Take the maximum of \emph{soft-Copeland} score as $\inputVector_{next}$.
+\item Take $\inputVector_{next}'$ that gives the maximum in PBO-PE
+\end{enumerate}
+
+\includegraphics[width=0.335\textwidth]{sample_f_star_cropped.pdf} 
+\includegraphics[width=0.295\textwidth]{sample_copeland_cropped.pdf} 
+\includegraphics[width=0.34\textwidth]{var_f_max_cropped.pdf} 
+
+%Illustration of the steps to propose a new duel using the duelling-Thompson acquisition. The duel is computed using the same model as in Figure \ref{fig:exploration}. The white triangle represents the final selected duel. \emph{Left:} Sample from $f_{\star}$ squashed through the logistic function $\sigma$. \emph{Center:} Sampled soft-Copeland function, which results from integrating the the sample from $\sigma(f_{\star})$ on the left across the vertical axis. The first element of the duel $\inputVector$ is selected as the location of the maximum of the sampled soft-Copeland function (vertical dotted line). \emph{Right:} The second element of the duel, $\inputVector'$, is selected by maximizing the variance of $\sigma(f_{\star})$ marginally given $\inputVector$ (maximum across the vertical dotted line).
+\end{frame}
+
+\begin{frame}{Experiment: Forrester Function}
+\begin{minipage}{0.36\textwidth}
+\begin{itemize}
+\item Synthetic 1D function: Forrester
+\item Observations drawn with a probability: 
+$ \frac1{1+e^{g(\latentVector)-g(\latentVector')}}$
+\item $g(x_c)$ shows the value at the location that algorithms \emph{believe} is the minimum.
+\item The curve is the average of 20 trials.
+\end{itemize}
+
+\begin{flushleft}
+\tiny
+IBO: \citep{Brochu:2010}\\
+SPARRING: \citep{AilonKJ14}
+\end{flushleft}
+\end{minipage}
+%
+\begin{minipage}{.63\textwidth}
+\includegraphics[width=1.\textwidth]{results_forrester_new.pdf}
+\end{minipage}
+\end{frame}
+
+\begin{frame}{Experiments: More (2D) Functions}
+\begin{center}
+\includegraphics[width=0.45\textwidth]{results_forrester_new.pdf} ~
+\includegraphics[width=0.45\textwidth]{results_sixhump_new.pdf} \\
+\includegraphics[width=0.45\textwidth]{results_goldstein.pdf} ~
+\includegraphics[width=0.45\textwidth]{results_levy.pdf} 
+\end{center}
+\end{frame}
+
+\begin{frame}{Summary}
+\begin{itemize}
+\item Address Bayesian optimization with preferential returns.
+\item Propose to build a surrogate model for the preference function.
+\item Propose a few efficient acquisition functions.
+\item Show the performance on synthetic functions.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{}
+Questions?
+\end{frame}
+
+
+% ====
+\appendix
+
+\begin{frame}{Exploration \& Exploitation}
+\centering
+\includegraphics[width=.93\textwidth]{menu.jpg} 
+
+The two ingredients in an acquisition function: Exploration \& Exploitation.
+\end{frame}
+
+\begin{frame}{Exploration in PBO}
+\begin{minipage}{0.65\textwidth}
+\begin{itemize}
+\item To understand exploration in PBO by designing a \emph{pure explorative} acq. func.
+\item Exploration in standard BO can be viewed as the action to reduce uncertainty of a surrogate model.
+\item A purely explorative acq. func. 
+$$\V[ y_{\star}]  = \int \left(y_{\star} - \E[ y_{\star}] \right)^2 p (y_{\star} | \dataSet,  \inputVector_\star) \dif{y_{\star}} $$
+\item Can we extend this idea to PBO?
+\end{itemize}
+\end{minipage}
+%
+\begin{minipage}{0.33\textwidth}
+\centering 
+\includegraphics[width=1.\textwidth]{EI.jpeg}
+\end{minipage}
+\end{frame}
+
+\begin{frame}{A Straight-Forward Choice}
+\begin{minipage}{0.65\textwidth}
+\begin{itemize}
+\item A straight-forward extension from standard BO:
+\begin{align*}
+\V[ y_{\star}]  =& \sum_{y_{\star}\in\{0,1\}} \left(y_{\star} - \E[ y_{\star}] \right)^2 p (y_{\star} | \dataSet,  [\inputVector_\star,\inputVector_\star'])\\
+=& \E[ y_{\star}](1-\E[ y_{\star}])
+\end{align*}
+\item The maximum variance is always at where $\E[ y_{\star}]=0.5$!
+\item The variance may not reduce with observations!
+\end{itemize}
+\end{minipage}
+%
+\begin{minipage}{0.33\textwidth}
+\centering 
+\includegraphics[width=.95\textwidth]{exp_y_star_cropped.pdf} \\
+\includegraphics[width=.95\textwidth]{var_y_star_cropped.pdf} 
+\end{minipage}
+\end{frame}
+
+\begin{frame}{Dueling-Thompson Sampling (DTS)}
+\begin{minipage}{0.65\textwidth}
+\begin{itemize}
+\item To balance exploration \& exploitation, we borrow the idea of Thompson sampling by drawing a sample from the surrogate model.
+\item Compute the \emph{soft-copeland} score on the drawn sample.
+\item The value $\inputVector_{next}$ that gives the maximum \emph{soft-copeland} score gives a good balance between exploration and exploitation.
+\item Take it as the \emph{first} value of the next duel. 
+\end{itemize}
+\end{minipage}
+%
+\begin{minipage}{.3\textwidth}
+\includegraphics[height=0.9\textheight]{sample_multiple_copeland.pdf}
+\end{minipage}
+\end{frame}
+
+
+\begin{frame}{Aleatoric Uncertainty \& Epistemic Uncertainty}
+\begin{itemize}
+\item The uncertainty of $y_\star$ comes from two sources: the \emph{aleatoric uncertainty} $\sigma(f_{\star})$ and the \emph{epistemic uncertainty} $p(f_{\star} | \dataSet, [\latentVector_{\star},\latentVector_{\star}'], \theta)$
+$$p(y_{\star} = 1 | \dataSet,  [\inputVector,\inputVector'], \theta) 
+= \int \sigma(f_{\star}) p(f_{\star} | \dataSet, [\latentVector_{\star},\latentVector_{\star}'], \theta) df_{\star} $$
+\item Aleatoric Uncertainty: the stochasticity of the underlying process 
+\item Epistemic Uncertainty: the uncertainty due to limited observations
+\item Exploration should focus on \emph{epistemic uncertainty}.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Multi-arm Bandits on 2D}
+\centering
+\includegraphics[width=0.6\textwidth]{results_sixhump_comparison.pdf}
+\end{frame}
+
+\bibliographystyle{plainnat}
+{\footnotesize
+\bibliography{bib_bopper}
+}
+%
+
+\end{document}
