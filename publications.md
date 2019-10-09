@@ -7,7 +7,16 @@ share: false
 ---
 
  A full list of my publications can be found on my [Google Scholar](http://scholar.google.com/citations?user=F58CO_QAAAAJ&hl=en) page.
+ 
++   Aaron Klein, **Zhenwen Dai**, Frank Hutter, Neil D. Lawrence, Javier Gonzalez (2019)  
+    **Meta-Surrogate Benchmarking for Hyperparameter Optimization**  
+    Conference on Neural Information Processing Systems (NeurIPS)  
+    [[PDF]](https://arxiv.org/abs/1905.12982)  
 
++   Mu Niu, Pokman Cheung, Lizhen Lin, **Zhenwen Dai**, Neil Lawrence, David Dunson (2019)  
+    **Intrinsic Gaussian processes on complex constrained domains**  
+    Journal of the Royal Statistical Society: Series B (Statistical Methodology)  
+    [[PDF]](https://doi.org/10.1111/rssb.12320)  
 
 +   Sungsoo Ahn, Shell Xu Hu, Andreas Damianou, Neil D. Lawrence, **Zhenwen Dai** (2019)  
     **Variational Information Distillation for Knowledge Transfer**  
