@@ -6,6 +6,11 @@ modified: 2014-08-08T20:53:07.573882-04:00
 comments: false
 share: false
 ---
+
++   What uncertainty do we get? (2019)  
+    Workshop on Uncertainty Propagation in Composite Models, Munich, Germany  
+    [[slides]](./slides/slides_Munich_2019.pdf)  
+
 +   Scalable Gaussian Processes (2018)  
     GPSS 2018, Sheffield, UK  
     [[slides]](./slides/gpss2018_slides.pdf)  
