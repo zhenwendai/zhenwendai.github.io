@@ -7,6 +7,10 @@ comments: false
 share: false
 ---
 
++   Bayesian Optimization: Basics & Challenges (2020)  
+    Boston Machine Learning Meetup, Boston, MA, US  
+    [[slides]](./slides/2020-01_boston_slides.pdf)  
+
 +   What uncertainty do we get? (2019)  
     Workshop on Uncertainty Propagation in Composite Models, Munich, Germany  
     [[slides]](./slides/slides_Munich_2019.pdf)  
