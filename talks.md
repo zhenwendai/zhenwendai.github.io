@@ -7,6 +7,10 @@ comments: false
 share: false
 ---
 
++   Scaling up Gaussian processes for real-world data (2020)  
+    Gaussian Processes Cambridge Meetup, Cambridge, UK  
+    [[slides]](./slides/2020-03_gpcambridge_slides.pdf)  
+
 +   Bayesian Optimization: Basics & Challenges (2020)  
     Boston Machine Learning Meetup, Boston, MA, US  
     [[slides]](./slides/2020-01_boston_slides.pdf)  
