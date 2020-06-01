@@ -7,7 +7,17 @@ share: false
 ---
 
  A full list of my publications can be found on my [Google Scholar](http://scholar.google.com/citations?user=F58CO_QAAAAJ&hl=en) page.
- 
+
++   Erik Bodin, Markus Kaiser, Ieva Kazlauskaite, **Zhenwen Dai**, Neill Campbell, Carl Henrik Ek (2020)  
+    **Modulating Surrogates for Bayesian Optimization**  
+    International Conference on Machine Learning (ICML)  
+    [[PDF]](https://arxiv.org/abs/1906.11152)  
+
++   Federico Tomasi, Praveen Ravichandran, Gal Levy-Fix, Mounia Lalmas-Roelleke, **Zhenwen Dai** (2020)  
+    **Stochastic Variational Inference for Dynamic Correlated Topic Models**  
+    Conference on Uncertainty in Artificial Intelligence (UAI)  
+    [[PDF]]()  
+
 +   Aaron Klein, **Zhenwen Dai**, Frank Hutter, Neil D. Lawrence, Javier Gonzalez (2019)  
     **Meta-Surrogate Benchmarking for Hyperparameter Optimization**  
     Conference on Neural Information Processing Systems (NeurIPS)  
