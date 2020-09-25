@@ -7,6 +7,10 @@ comments: false
 share: false
 ---
 
++   Variational Gaussian Processes (2020)  
+    GPSS 2020, online  
+    [[slides]](./slides/gpss2020_slides.pdf)  
+
 +   Scaling up Gaussian processes for real-world data (2020)  
     Gaussian Processes Cambridge Meetup, Cambridge, UK  
     [[slides]](./slides/2020-03_gpcambridge_slides.pdf)  
@@ -18,6 +22,10 @@ share: false
 +   What uncertainty do we get? (2019)  
     Workshop on Uncertainty Propagation in Composite Models, Munich, Germany  
     [[slides]](./slides/slides_Munich_2019.pdf)  
+
++   Scalable Gaussian Processes (2019)  
+    GPSS 2019, Sheffield, UK  
+    [[slides]](./slides/gpss2019_slides.pdf)  
 
 +   Scalable Gaussian Processes (2018)  
     GPSS 2018, Sheffield, UK  
