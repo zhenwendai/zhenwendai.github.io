@@ -8,6 +8,11 @@ share: false
 
  A full list of my publications can be found on my [Google Scholar](http://scholar.google.com/citations?user=F58CO_QAAAAJ&hl=en) page.
 
+ +   **Zhenwen Dai**, Praveen Chandar, Ghazal Fazelnia, Benjamin Carterette, Mounia Lalmas (2020)  
+     **Model Selection for Production System via Automated Online Experiments**  
+     Advances in Neural Information Processing Systems 33 pre-proceedings (NeurIPS)  
+     [[PDF]](http://proceedings.neurips.cc/paper/2020/hash/0c72cb7ee1512f800abe27823a792d03-Abstract.html)  
+
 +   Erik Bodin, Markus Kaiser, Ieva Kazlauskaite, **Zhenwen Dai**, Neill Campbell, Carl Henrik Ek (2020)  
     **Modulating Surrogates for Bayesian Optimization**  
     International Conference on Machine Learning (ICML)  
@@ -16,7 +21,7 @@ share: false
 +   Federico Tomasi, Praveen Ravichandran, Gal Levy-Fix, Mounia Lalmas-Roelleke, **Zhenwen Dai** (2020)  
     **Stochastic Variational Inference for Dynamic Correlated Topic Models**  
     Conference on Uncertainty in Artificial Intelligence (UAI)  
-    [[PDF]]()  
+    [[PDF]](http://proceedings.mlr.press/v124/tomasi20a.html)  
 
 +   Aaron Klein, **Zhenwen Dai**, Frank Hutter, Neil D. Lawrence, Javier Gonzalez (2019)  
     **Meta-Surrogate Benchmarking for Hyperparameter Optimization**  
