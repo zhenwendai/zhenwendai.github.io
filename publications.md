@@ -8,6 +8,11 @@ share: false
 
  A full list of my publications can be found on my [Google Scholar](http://scholar.google.com/citations?user=F58CO_QAAAAJ&hl=en) page.
 
+ +   Erik Bodin, **Zhenwen Dai**, Neill D.F. Campbell, Carl Henrik Ek (2021)  
+     **Black-box density function estimation using recursive partitioning**  
+     International Conference on Machine Learning (ICML)  
+     [[PDF]](https://arxiv.org/abs/2010.13632)  
+
  +   **Zhenwen Dai**, Praveen Chandar, Ghazal Fazelnia, Benjamin Carterette, Mounia Lalmas (2020)  
      **Model Selection for Production System via Automated Online Experiments**  
      Advances in Neural Information Processing Systems 33 pre-proceedings (NeurIPS)  
