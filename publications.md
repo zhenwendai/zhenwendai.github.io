@@ -12,10 +12,15 @@ share: false
      **Black-box density function estimation using recursive partitioning**  
      International Conference on Machine Learning (ICML)  
      [[PDF]](https://arxiv.org/abs/2010.13632)  
+     
+ +   Erik Bodin, Federico Tomasi, **Zhenwen Dai** (2021)  
+     **Making Differentiable Architecture Search Less Local**  
+     ICLR Workshop on Neural Architecture Search  
+     [[PDF]](https://arxiv.org/abs/2104.10450)  
 
  +   **Zhenwen Dai**, Praveen Chandar, Ghazal Fazelnia, Benjamin Carterette, Mounia Lalmas (2020)  
      **Model Selection for Production System via Automated Online Experiments**  
-     Advances in Neural Information Processing Systems 33 pre-proceedings (NeurIPS)  
+     Advances in Neural Information Processing Systems (NeurIPS)  
      [[PDF]](http://proceedings.neurips.cc/paper/2020/hash/0c72cb7ee1512f800abe27823a792d03-Abstract.html)  
 
 +   Erik Bodin, Markus Kaiser, Ieva Kazlauskaite, **Zhenwen Dai**, Neill Campbell, Carl Henrik Ek (2020)  
