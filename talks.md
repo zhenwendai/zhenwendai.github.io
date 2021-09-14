@@ -7,6 +7,10 @@ comments: false
 share: false
 ---
 
++   Scalability of Gaussian Processes (2021)  
+    GPSS 2021, online  
+    [[slides]](./slides/gpss2021_slides.pdf)  
+
 +   Variational Gaussian Processes (2020)  
     GPSS 2020, online  
     [[slides]](./slides/gpss2020_slides.pdf)  
