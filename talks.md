@@ -7,6 +7,13 @@ comments: false
 share: false
 ---
 
++   Reinforcement Learning at Spotify: An example with Interactive Radio (2022)  
+    Deep Learning Summit, London, UK  
+
++   Scalability of Gaussian Processes (2022)  
+    GPSS 2022, Sheffield, UK  
+    [[slides]](https://gpss.cc/gpss22/slides/zhenwen.pdf)  
+
 +   Scalability of Gaussian Processes (2021)  
     GPSS 2021, online  
     [[slides]](./slides/gpss2021_slides.pdf)  

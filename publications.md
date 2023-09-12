@@ -8,6 +8,26 @@ share: false
 
  A full list of my publications can be found on my [Google Scholar](http://scholar.google.com/citations?user=F58CO_QAAAAJ&hl=en) page.
 
+ +   Federico Tomasi, Joseph Cauteruccio, Surya Kanoria, Kamil Ciosek, Matteo Rinaldi, **Zhenwen Dai** (2023)  
+     **Automatic Music Playlist Generation via Simulation-based Reinforcement Learning**  
+     ACM SIGKDD Conference on Knowledge Discovery and Data Mining  
+     [[PDF]]()  
+
+ +   Mu Niu, **Zhenwen Dai**, Pokman Cheung, Yizhu Wang (2023)  
+     **Intrinsic Gaussian Process on Unknown Manifolds with Probabilistic Metrics**  
+     Journal of Machine Learning Research (JMLR)  
+     [[PDF]]()  
+
+ +   Simon Damm, Dennis Forster, Dmytro Velychko, **Zhenwen Dai**, Asja Fischer, Jörg Lücke (2023)  
+     **The ELBO of Variational Autoencoders Converges to a Sum of Entropies**  
+     International Conference on Artificial Intelligence and Statistics (AISTATS)  
+     [[PDF]]()  
+
+ +   Federico Tomasi, Mounia Lalmas, **Zhenwen Dai** (2022)  
+     **Efficient inference for dynamic topic modeling with large vocabularies**  
+     Uncertainty in Artificial Intelligence (UAI)  
+     [[PDF]]()  
+
  +   Erik Bodin, **Zhenwen Dai**, Neill D.F. Campbell, Carl Henrik Ek (2021)  
      **Black-box density function estimation using recursive partitioning**  
      International Conference on Machine Learning (ICML)  
