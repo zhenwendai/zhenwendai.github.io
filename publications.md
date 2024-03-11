@@ -8,6 +8,12 @@ share: false
 
  A full list of my publications can be found on my [Google Scholar](http://scholar.google.com/citations?user=F58CO_QAAAAJ&hl=en) page.
 
+
+ +   **Zhenwen Dai**, Federico Tomasi, Sina Ghiassian (2024)  
+     **In-context Exploration-Exploitation for Reinforcement Learning**  
+     International Conference on Learning Representations (ICLR)  
+     [[PDF]](https://openreview.net/forum?id=uIKZSStON3)  
+
  +   Federico Tomasi, Joseph Cauteruccio, Surya Kanoria, Kamil Ciosek, Matteo Rinaldi, **Zhenwen Dai** (2023)  
      **Automatic Music Playlist Generation via Simulation-based Reinforcement Learning**  
      ACM SIGKDD Conference on Knowledge Discovery and Data Mining  
