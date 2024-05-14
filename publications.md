@@ -12,7 +12,7 @@ share: false
  +   **Zhenwen Dai**, Federico Tomasi, Sina Ghiassian (2024)  
      **In-context Exploration-Exploitation for Reinforcement Learning**  
      International Conference on Learning Representations (ICLR)  
-     [[PDF]](https://openreview.net/forum?id=uIKZSStON3)  
+     [[PDF]](https://openreview.net/forum?id=uIKZSStON3) [[Blog]](https://research.atspotify.com/2024/05/in-context-exploration-exploitation-for-reinforcement-learning/)  
 
  +   Federico Tomasi, Joseph Cauteruccio, Surya Kanoria, Kamil Ciosek, Matteo Rinaldi, **Zhenwen Dai** (2023)  
      **Automatic Music Playlist Generation via Simulation-based Reinforcement Learning**  
