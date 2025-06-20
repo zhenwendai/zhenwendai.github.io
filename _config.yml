@@ -1,6 +1,6 @@
 # Site settings
 title: Zhenwen Dai
-email: zhenwen@trent-ai.com
+email: zhenwen@trent.ai
 description: > # this means to ignore newlines until "baseurl:"
 
 baseurl: "" # the subpath of your site, e.g. /blog/
